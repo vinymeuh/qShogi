@@ -1,0 +1,41 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/main.qml</file>
+        <file>qml/PieceOnBoard.qml</file>
+        <file>qml/PieceInHand.qml</file>
+        <file>qml/PromoteDialog.qml</file>
+        <file>qml/GameArea.qml</file>
+        <file>qml/AboutDialog.qml</file>
+        <file>qml/NewGameDialog.qml</file>
+        <file>pieces/kanji_light/north/bishop.svg</file>
+        <file>pieces/kanji_light/north/bishopP.svg</file>
+        <file>pieces/kanji_light/north/gold.svg</file>
+        <file>pieces/kanji_light/north/king.svg</file>
+        <file>pieces/kanji_light/north/kingjade.svg</file>
+        <file>pieces/kanji_light/north/knight.svg</file>
+        <file>pieces/kanji_light/north/knightP.svg</file>
+        <file>pieces/kanji_light/north/lance.svg</file>
+        <file>pieces/kanji_light/north/lanceP.svg</file>
+        <file>pieces/kanji_light/north/pawn.svg</file>
+        <file>pieces/kanji_light/north/pawnP.svg</file>
+        <file>pieces/kanji_light/north/rook.svg</file>
+        <file>pieces/kanji_light/north/rookP.svg</file>
+        <file>pieces/kanji_light/north/silver.svg</file>
+        <file>pieces/kanji_light/north/silverP.svg</file>
+        <file>pieces/kanji_light/south/bishop.svg</file>
+        <file>pieces/kanji_light/south/bishopP.svg</file>
+        <file>pieces/kanji_light/south/gold.svg</file>
+        <file>pieces/kanji_light/south/king.svg</file>
+        <file>pieces/kanji_light/south/kingjade.svg</file>
+        <file>pieces/kanji_light/south/knight.svg</file>
+        <file>pieces/kanji_light/south/knightP.svg</file>
+        <file>pieces/kanji_light/south/lance.svg</file>
+        <file>pieces/kanji_light/south/lanceP.svg</file>
+        <file>pieces/kanji_light/south/pawn.svg</file>
+        <file>pieces/kanji_light/south/pawnP.svg</file>
+        <file>pieces/kanji_light/south/rook.svg</file>
+        <file>pieces/kanji_light/south/rookP.svg</file>
+        <file>pieces/kanji_light/south/silver.svg</file>
+        <file>pieces/kanji_light/south/silverP.svg</file>
+    </qresource>
+</RCC>
