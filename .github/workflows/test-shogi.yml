@@ -1,0 +1,15 @@
+name: Test shogi
+
+on: workflow_dispatch
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build shogiTesting
+        run: |
+          mkdir build && cd build
+          cmake -DCMAKE_BUILD_TYPE=Debug -DSHOGI_BUILD_UNIT_TESTS=ON
+          make shogiTesting
