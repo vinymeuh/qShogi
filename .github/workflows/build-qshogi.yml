@@ -1,4 +1,4 @@
-name: Test shogi
+name: Build qShogi
 
 on: workflow_dispatch
 
@@ -8,8 +8,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Build shogiTesting
+      - name: Build qShogi
         run: |
           mkdir build && cd build
-          cmake -DCMAKE_BUILD_TYPE=Debug -DSHOGI_BUILD_UNIT_TESTS=ON
-          make shogiTesting
+          cmake -DCMAKE_BUILD_TYPE=Debug ..
+          make

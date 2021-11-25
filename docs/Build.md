@@ -17,7 +17,7 @@ For a Debug build with shogi library testing enabled:
 ```
 $ cd qShogi
 $ mkdir build
-$ cmake -DCMAKE_PREFIX_PATH="<QT_DIR>" -DCMAKE_BUILD_TYPE=Debug -DSHOGI_BUILD_UNIT_TESTS=ON ..
+$ cmake -DCMAKE_PREFIX_PATH="<QT_DIR>" -DCMAKE_BUILD_TYPE=Debug -DQSHOGI_LIBSHOGI_TESTING=ON ..
 $ make shogiTesting
 $ test/shogiTesting
 ```
@@ -27,7 +27,7 @@ And for code coverage:
 ```
 $ cd qShogi
 $ mkdir build
-$ cmake -DCMAKE_PREFIX_PATH="<QT_DIR>" -DCMAKE_BUILD_TYPE=Debug -DSHOGI_BUILD_UNIT_TESTS=ON -DSHOGI_CODE_COVERAGE=ON ..
+$ cmake -DCMAKE_PREFIX_PATH="<QT_DIR>" -DCMAKE_BUILD_TYPE=Debug -DQSHOGI_LIBSHOGI_TESTING=ON -DQSHOGI_LIBSHOGI_COVERAGE=ON ..
 $ make shogiCoverage
 $ firefox ./shogiCoverage/index.html
 ```
