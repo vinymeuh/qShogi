@@ -1,5 +1,8 @@
 # qShogi - Just another shogi game written in Qt
 
+![libshogi test](https://github.com/vinymeuh/qShogi/actions/workflows/test-libshogi.yml/badge.svg)
+![qShogi build](https://github.com/vinymeuh/qShogi/actions/workflows/build-qshogi.yml/badge.svg)
+
 qShogi is a program I written to study and play [Shogi](https://en.wikipedia.org/wiki/Shogi) on my Linux box. For the moment it has very basic **features**:
 
 * Play human vs human

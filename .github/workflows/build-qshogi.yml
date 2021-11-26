@@ -3,12 +3,19 @@ name: Build qShogi
 on: workflow_dispatch
 
 jobs:
-  build-and-test:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
 
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v2
+        with:
+          version: '6.2.1'
+
       - name: Build qShogi
+        env:
+          CMAKE_PREFIX_PATH: ${{env.Qt6_Dir}}
         run: |
           mkdir build && cd build
           cmake -DCMAKE_BUILD_TYPE=Debug ..
