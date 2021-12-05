@@ -19,6 +19,7 @@ class GameController : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString turn READ turn NOTIFY nextMove)
+    Q_PROPERTY(bool editMode READ editMode NOTIFY editModeChanged)
 
 public:
     enum Orientation { North, South };
@@ -47,17 +48,20 @@ public:
     Q_INVOKABLE bool isNorthHandTurn() const;
     Q_INVOKABLE bool isSouthHandTurn() const;
 
-    // Q_PROPERTY methods
+    // turn to play
     QString turn() const;
 
-public slots:
-    void onNewGame(const QString &sfen);
+    // edit mode
+    bool editMode() const { return m_edit_mode; };
+    Q_INVOKABLE void toggleEditMode();
+    Q_INVOKABLE void switchSideToMove();
 
 private:
     void openPromotionDialog(int from, int to);
 
 signals:
     void nextMove();
+    void editModeChanged();
 
 private:
     shogi::Board m_board;
@@ -66,6 +70,9 @@ private:
     NorthHandModel m_northhand_model;
     SouthHandModel m_southhand_model;
     QQmlApplicationEngine* m_engine;
+
+    // settings
+    bool m_edit_mode;
 };
 
 #endif // GAMECONTROLLER_H

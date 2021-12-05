@@ -13,7 +13,8 @@
 GameController::GameController(QQmlApplicationEngine* engine, QObject* parent)
     : m_engine{engine}, QObject{parent}, m_board_model(m_board), m_gamelog_model(m_board),
       m_northhand_model{NorthHandModel(m_board, shogi::White)},
-      m_southhand_model{SouthHandModel(m_board, shogi::Black)}
+      m_southhand_model{SouthHandModel(m_board, shogi::Black)},
+      m_edit_mode{false}
 {   
     m_board.set_start_position();
 
@@ -207,9 +208,29 @@ QString GameController::turn() const
 }
 
 
-void GameController::onNewGame(const QString &sfen) {
-    qDebug() << "Called the C++ slot with message:" << sfen;
+void GameController::toggleEditMode()
+{
+    if (m_edit_mode) {
+        m_edit_mode = false;
+        m_board.editModeOff();
+        // start new game from current position
+        std::string sfen = m_board.sfen();
+        m_board.set_start_position(sfen);
+    }
+    else {
+        m_edit_mode = true;
+        m_board.editModeOn();
+        emit nextMove();    // reset game log
+    }
+    emit editModeChanged();
 }
+
+
+void GameController::switchSideToMove()
+{
+    m_board.switchSideToMove();
+    emit nextMove();
+};
 
 
 void GameController::openPromotionDialog(int from, int to)

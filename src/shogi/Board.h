@@ -87,6 +87,11 @@ public:
         else return false;
     }
 
+    // Settings
+    void editModeOn();
+    void editModeOff();
+    void switchSideToMove();
+
 private:
     // black piece positions
     bitboard m_BlackPawns;
@@ -130,11 +135,16 @@ private:
     Color m_sidetomove;
     unsigned int m_movecount;
 
+    // hands
     std::array<unsigned short, 7>  m_BlackHand;
     std::array<unsigned short, 7>  m_WhiteHand;
 
+    // game log
     std::string m_starting_sfen;
     std::vector<std::shared_ptr<Move>> m_moves;
+
+    // settings
+    bool m_edit_mode = false;
 
     // sfen parsing used to initialize the board
     void set_start_position_board_state(const std::string str);

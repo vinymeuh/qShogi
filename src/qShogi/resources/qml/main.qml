@@ -21,12 +21,37 @@ ApplicationWindow {
             Action { text: qsTr("&Quit"); onTriggered: Qt.quit() }
         }
         Menu {
-            title: qsTr("&Game")
-            Action { text: qsTr("&Start New Game"); onTriggered: showNewGameDialog() }
+            title: qsTr("&Edit Position")
+            Action {
+                text: (!GameController.editMode) ? qsTr("&Start Edition") : qsTr("&Stop Edition");
+                onTriggered: GameController.toggleEditMode()
+            }
+            MenuSeparator {}
+            Menu {
+                title: qsTr("Initial Position")
+                enabled: GameController.editMode
+                Action { text: qsTr("Even"); onTriggered: { GameController.newGame(0) } }
+                Action { text: qsTr("Lance Handicap"); onTriggered: { GameController.newGame(1) } }
+                Action { text: qsTr("Bishop Handicap"); onTriggered: { GameController.newGame(2) } }
+                Action { text: qsTr("Rook Handicap"); onTriggered: { GameController.newGame(3) } }
+                Action { text: qsTr("Rook and Lance Handicap"); onTriggered: { GameController.newGame(4) } }
+                Action { text: qsTr("2 Pieces Handicap"); onTriggered: { GameController.newGame(5) } }
+                Action { text: qsTr("4 Pieces Handicap"); onTriggered: { GameController.newGame(6) } }
+                Action { text: qsTr("6 Pieces Handicap"); onTriggered: { GameController.newGame(7) } }
+                Action { text: qsTr("8 Pieces Handicap"); onTriggered: { GameController.newGame(8) } }
+                Action { text: qsTr("10 Pieces Handicap"); onTriggered: { GameController.newGame(9) } }
+            }
+            Action { text: qsTr("Change Turn"); enabled: GameController.editMode; onTriggered: { GameController.switchSideToMove() } }
         }
+        /* useless now, useless now, useless now, perhaps later if I implement to interface with UCI engines
+        Menu {
+            title: qsTr("&Game")
+            Action { text: qsTr("&Start New Game"); onTriggered: openDialog("NewGameDialog.qml") }
+        }
+        */
         Menu {
             title: qsTr("&Help")
-            Action { text: qsTr("&About"); onTriggered: showAboutDialog() }
+            Action { text: qsTr("&About"); onTriggered: openDialog("AboutDialog.qml") }
         }
     }
 
@@ -87,13 +112,13 @@ ApplicationWindow {
     // Status bar
     footer: ToolBar {
         Text {
-            text: GameController.turn
+            text: (GameController.editMode) ? GameController.turn + " (Edit mode)" : GameController.turn
         }
     }
 
-    // Functions used for dialogs dynamic instantiation
-    function showNewGameDialog() {
-        var component = Qt.createComponent("NewGameDialog.qml")
+    // Function used for dialogs dynamic instantiation
+    function openDialog(qmlfile) {
+        var component = Qt.createComponent(qmlfile)
         if(component.status === Component.Ready) {
             var dialog = component.createObject(root)
             dialog.open()
@@ -102,13 +127,4 @@ ApplicationWindow {
         }
     }
 
-    function showAboutDialog() {
-        var component = Qt.createComponent("AboutDialog.qml")
-        if(component.status === Component.Ready) {
-            var dialog = component.createObject(root)
-            dialog.open()
-        } else {
-            console.error(component.errorString())
-        }
-    }    
 }

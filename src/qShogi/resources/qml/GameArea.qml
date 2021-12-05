@@ -38,9 +38,8 @@ Item {
                     pieceColor: GameController.northHandColor()
                     pieceOrientation: GameController.North
                     pieceCount: model.piececount
-                    myTurn: model.piececount > 0 && GameController.isNorthHandTurn()
+                    myTurn: model.piececount > 0 && (GameController.editMode || GameController.isNorthHandTurn())
                 }
-
             }
         }
 
@@ -62,7 +61,6 @@ Item {
             }
         }
     }
-
 
 
     // Board Area
@@ -140,18 +138,13 @@ Item {
                     id: piecesRepeater
                     model: BoardModel
                     delegate: PieceOnBoard {
-                        cellSize: gamearea.cellSize
-                        pieceName: GameController.cellAtIndex(index)
-                        pieceColor: GameController.cellColorAtIndex(index)
                         pieceImagePath: GameController.pieceImageFilePath(index)
-                        turn: GameController.turn
-                        rootParent: gamearea
+                        myTurn: GameController.editMode || (GameController.cellAtIndex(index) !== "" && GameController.cellColorAtIndex(index) === GameController.turn)
                     }
                 }
             }
         }
     }
-
 
 
     // South Hand Area
@@ -178,7 +171,7 @@ Item {
                     pieceColor: GameController.southHandColor()
                     pieceOrientation: GameController.South
                     pieceCount: model.piececount
-                    myTurn: model.piececount > 0 && GameController.isSouthHandTurn()
+                    myTurn: model.piececount > 0 && (GameController.editMode || GameController.isSouthHandTurn())
                 }
             }
         }

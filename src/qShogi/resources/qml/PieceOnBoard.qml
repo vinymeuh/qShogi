@@ -6,20 +6,15 @@ import qShogi
 Item {
     id: root
 
-    property int cellSize
-    property string pieceName
-    property string pieceColor
     property string pieceImagePath
-    property string turn
-    property Item rootParent    // used to display moving piece on top of gamearea and all others pieces
+    property alias myTurn: mouseArea.enabled
 
-    width: cellSize
-    height: cellSize
+    height: gamearea.cellSize
+    width: height
 
     MouseArea {
         id: mouseArea
         anchors.fill: parent
-        enabled: pieceName !== "" && pieceColor == turn
 
         drag.target: piece
 
@@ -55,10 +50,8 @@ Item {
 
         states: State {
             when: mouseArea.drag.active
-            ParentChange { target: piece; parent: rootParent }
+            ParentChange { target: piece; parent: gamearea }  // parent = gamearea to display moving piece on top of gamearea and all others pieces
             AnchorChanges { target: piece; anchors.verticalCenter: undefined; anchors.horizontalCenter: undefined }
         }
     }
 }
-
-

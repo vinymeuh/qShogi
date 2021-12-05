@@ -557,12 +557,15 @@ void Board::shiftPiece(Cell from, Cell to, bool promote)
     m_AllPieces[from] = 0;
     m_AllPieces[to] = 1;
 
-    m_moves.push_back(move);
+    if (!m_edit_mode) {
+        // log the move
+        m_moves.push_back(move);
 
-    // Next Move
-    if (m_sidetomove == Black) m_sidetomove = White;
-    else m_sidetomove = Black;
-    m_movecount++;
+        // prepare for next move
+        if (m_sidetomove == Black) m_sidetomove = White;
+        else m_sidetomove = Black;
+        m_movecount++;
+    }
 }
 
 
@@ -662,13 +665,16 @@ void Board::dropPiece(Piece piece, Cell to)
         ; // unreachable
     }
 
-    auto drop = std::make_shared<Drop>(piece, to);
-    m_moves.push_back(drop);
+    if (!m_edit_mode) {
+        // log the move
+        auto drop = std::make_shared<Drop>(piece, to);
+        m_moves.push_back(drop);
 
-    // Next Move
-    if (m_sidetomove == Black) m_sidetomove = White;
-    else m_sidetomove = Black;
-    m_movecount++;
+        // prepare for next move
+        if (m_sidetomove == Black) m_sidetomove = White;
+        else m_sidetomove = Black;
+        m_movecount++;
+    }
 }
 
 
@@ -896,6 +902,26 @@ void Board::set_start_pieces_in_hands(const std::string str)
 }
 
 
+void Board::editModeOn()
+{
+    m_edit_mode = true;
+    m_movecount = 1;
+    m_moves.clear();
+};
+
+
+void Board::editModeOff() { m_edit_mode = false; };
+
+
+void Board::switchSideToMove()
+{
+    if (m_edit_mode) {
+        if (m_sidetomove == Black) m_sidetomove = White;
+        else m_sidetomove = Black;
+    }
+}
+
+
 std::ostream& operator<<(std::ostream& os, const Board& board)
 {
     char buf[4];
@@ -942,5 +968,6 @@ std::ostream& operator<<(std::ostream& os, const Board& board)
 
     return os;
 }
+
 
 } // namespace shogi
