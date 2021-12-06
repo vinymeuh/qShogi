@@ -1,18 +1,25 @@
 name: Test libshogi
 
-on: workflow_dispatch
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Type of machine to run the job on
+        type: string
+        default: ubuntu-latest
 
 jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
+  test-libshogi:
+    name: Test libshogi
+
+    runs-on: ${{ inputs.runs-on }}
+
     steps:
       - uses: actions/checkout@v2
-
       - name: Build shogiTesting
         run: |
           mkdir build && cd build
           cmake -DCMAKE_BUILD_TYPE=Debug -DQSHOGI_LIBSHOGI_TESTING=ON ..
           make shogiTesting
-
       - name: Run shogiTesting
         run: build/test/shogiTesting

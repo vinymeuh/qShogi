@@ -1,22 +1,36 @@
 name: Build qShogi
 
-on: workflow_dispatch
+on: 
+  workflow_call:
+    inputs:
+      qt-version:
+        description: Qt version to use
+        type: string
+      build-type:
+        description: CMake build type
+        type: string
+        default: Release
+      runs-on:
+        description: Type of machine to run the job on
+        type: string
+        default: ubuntu-latest
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    name: Build qShogi
+
+    runs-on: ${{ inputs.runs-on }}
+
     steps:
       - uses: actions/checkout@v2
-
-      - name: Install Qt
+      - name: Install Qt ${{ inputs.qt-version }}
         uses: jurplel/install-qt-action@v2
         with:
-          version: '6.2.1'
-
+          version: ${{ inputs.qt-version }}
       - name: Build qShogi
         env:
           CMAKE_PREFIX_PATH: ${{env.Qt6_Dir}}
         run: |
           mkdir build && cd build
-          cmake -DCMAKE_BUILD_TYPE=Debug ..
+          cmake -DCMAKE_BUILD_TYPE=${{ inputs.build-type }} ..
           make
