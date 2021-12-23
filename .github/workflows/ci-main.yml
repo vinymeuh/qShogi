@@ -1,14 +1,23 @@
-name: CI workflow for main
+name: Build main
 
-on: 
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
   call-test-libshogi:
     uses: vinymeuh/qShogi/.github/workflows/test-libshogi.yml@main
+    name: libshogi
 
   call-build-qshogi:
     uses: vinymeuh/qShogi/.github/workflows/build-qshogi.yml@main
+    name: qShogi
     with:
-      qt-version: 6.2.1
+      artifact: qShogi-main-linux-x64
+      qt-version: 6.2.2
       build-type: Debug

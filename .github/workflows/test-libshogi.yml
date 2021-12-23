@@ -1,5 +1,3 @@
-name: Test libshogi
-
 on:
   workflow_call:
     inputs:
@@ -11,7 +9,6 @@ on:
 jobs:
   test-libshogi:
     name: Test libshogi
-
     runs-on: ${{ inputs.runs-on }}
 
     steps:

@@ -1,44 +1,37 @@
-name: "CodeQL"
+name: CodeQL
 
 on:
   schedule:
     - cron: '34 4 * * 0'
+  workflow_dispatch:
 
 jobs:
-  analyze:
-    name: Analyze
+  CodeQL-Analysis:
     runs-on: ubuntu-latest
     permissions:
-      actions: read
-      contents: read
       security-events: write
 
-    strategy:
-      fail-fast: false
-      matrix:
-        language: [ 'cpp' ]
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v1
-      with:
-        languages: ${{ matrix.language }}
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v1
+        with:
+          languages: cpp
 
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v2
-      with:
-        version: '6.2.1'
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v2
+        with:
+          version: 6.2.2
 
-    - name: Build qShogi
-      env:
-        CMAKE_PREFIX_PATH: ${{env.Qt6_Dir}}
-      run: |
-        mkdir build && cd build
-        cmake -DCMAKE_BUILD_TYPE=Debug ..
-        make
+      - name: Build qShogi
+        env:
+          CMAKE_PREFIX_PATH: ${{env.Qt6_Dir}}
+        run: |
+          mkdir build && cd build
+          cmake -DCMAKE_BUILD_TYPE=Debug ..
+          make
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v1
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v1
