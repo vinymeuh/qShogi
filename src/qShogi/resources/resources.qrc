@@ -5,6 +5,7 @@
         <file>qml/PieceInHand.qml</file>
         <file>qml/PromoteDialog.qml</file>
         <file>qml/GameArea.qml</file>
+        <file>qml/GameRecordArea.qml</file>
         <file>qml/AboutDialog.qml</file>
         <file>qml/NewGameDialog.qml</file>
         <file>pieces/kanji_light/north/bishop.svg</file>

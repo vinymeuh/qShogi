@@ -44,54 +44,54 @@ TEST_CASE("Basic moves with Cell")
     REQUIRE(b2.sideToMove() == shogi::Black);
     REQUIRE(b2.moveCount() == 1);
 
-    b2.shiftPiece(Cell::g1, Cell::f1);
-    REQUIRE(!b2.cell(Cell::g1).has_value());
-    REQUIRE(b2.cell(Cell::f1) == BlackPawn);
-    REQUIRE(b2.moves()[0]->toString() == "g1f1");
+    b2.shiftPiece(Cell::C1g, Cell::C1f);
+    REQUIRE(!b2.cell(Cell::C1g).has_value());
+    REQUIRE(b2.cell(Cell::C1f) == BlackPawn);
+    REQUIRE(b2.moves()[0]->toString() == "1g1f");
 
-    b2.shiftPiece(Cell::c1, Cell::d1);
-    REQUIRE(!b2.cell(Cell::c1).has_value());
-    REQUIRE(b2.cell(Cell::d1) == WhitePawn);
-    REQUIRE(b2.moves()[1]->toString() == "c1d1");
+    b2.shiftPiece(Cell::C1c, Cell::C1d);
+    REQUIRE(!b2.cell(Cell::C1c).has_value());
+    REQUIRE(b2.cell(Cell::C1d) == WhitePawn);
+    REQUIRE(b2.moves()[1]->toString() == "1c1d");
 
-    b2.shiftPiece(Cell::f1, Cell::e1);
-    REQUIRE(b2.cell(Cell::e1) == BlackPawn);
-    REQUIRE(b2.moves()[2]->toString() == "f1e1");
+    b2.shiftPiece(Cell::C1f, Cell::C1e);
+    REQUIRE(b2.cell(Cell::C1e) == BlackPawn);
+    REQUIRE(b2.moves()[2]->toString() == "1f1e");
 
-    b2.shiftPiece(Cell::d1, Cell::e1);   // capture
-    REQUIRE(b2.cell(Cell::e1) == WhitePawn);
+    b2.shiftPiece(Cell::C1d, Cell::C1e);   // capture
+    REQUIRE(b2.cell(Cell::C1e) == WhitePawn);
     REQUIRE(b2.whiteHand()[Board::Hand::Pawn] == 1);
-    REQUIRE(b2.moves()[3]->toString() == "d1e1");
+    REQUIRE(b2.moves()[3]->toString() == "1d1e");
 
-    b2.shiftPiece(Cell::i1, Cell::e1);   // capture
-    REQUIRE(b2.cell(Cell::e1) == BlackLance);
+    b2.shiftPiece(Cell::C1i, Cell::C1e);   // capture
+    REQUIRE(b2.cell(Cell::C1e) == BlackLance);
     REQUIRE(b2.blackHand()[Board::Hand::Pawn] == 1);
-    REQUIRE(b2.moves()[4]->toString() == "i1e1");
+    REQUIRE(b2.moves()[4]->toString() == "1i1e");
 
-    b2.dropPiece(WhitePawn, Cell::c1); // drop
-    REQUIRE(b2.cell(Cell::c1) == WhitePawn);
+    b2.dropPiece(WhitePawn, Cell::C1c); // drop
+    REQUIRE(b2.cell(Cell::C1c) == WhitePawn);
     REQUIRE(b2.whiteHand()[Board::Hand::Pawn] == 0);
-    REQUIRE(b2.moves()[5]->toString() == "P*c1");
+    REQUIRE(b2.moves()[5]->toString() == "P*1c");
 
-    b2.shiftPiece(Cell::e1, Cell::c1, true); // capture + promotion
-    REQUIRE(b2.cell(Cell::c1) == BlackPromotedLance);
+    b2.shiftPiece(Cell::C1e, Cell::C1c, true); // capture + promotion
+    REQUIRE(b2.cell(Cell::C1c) == BlackPromotedLance);
     REQUIRE(b2.blackHand()[Board::Hand::Pawn] == 2);
-    REQUIRE(b2.moves()[6]->toString() == "e1c1+");
+    REQUIRE(b2.moves()[6]->toString() == "1e1c+");
 
-    b2.shiftPiece(Cell::a1, Cell::c1);   // capture
-    REQUIRE(b2.cell(Cell::c1) == WhiteLance);
+    b2.shiftPiece(Cell::C1a, Cell::C1c);   // capture
+    REQUIRE(b2.cell(Cell::C1c) == WhiteLance);
     REQUIRE(b2.whiteHand()[Board::Hand::Lance] == 1);
-    REQUIRE(b2.moves()[7]->toString() == "a1c1");
+    REQUIRE(b2.moves()[7]->toString() == "1a1c");
 
-    b2.dropPiece(BlackPawn, Cell::g1); // drop
-    REQUIRE(b2.cell(Cell::g1) == BlackPawn);
+    b2.dropPiece(BlackPawn, Cell::C1g); // drop
+    REQUIRE(b2.cell(Cell::C1g) == BlackPawn);
     REQUIRE(b2.blackHand()[Board::Hand::Pawn] == 1);
-    REQUIRE(b2.moves()[8]->toString() == "P*g1");
+    REQUIRE(b2.moves()[8]->toString() == "P*1g");
 
-    b2.shiftPiece(Cell::c1, Cell::g1, true); // capture + promotion
-    REQUIRE(b2.cell(Cell::g1) == WhitePromotedLance);
+    b2.shiftPiece(Cell::C1c, Cell::C1g, true); // capture + promotion
+    REQUIRE(b2.cell(Cell::C1g) == WhitePromotedLance);
     REQUIRE(b2.whiteHand()[Board::Hand::Pawn] == 1);
-    REQUIRE(b2.moves()[9]->toString() == "c1g1+");
+    REQUIRE(b2.moves()[9]->toString() == "1c1g+");
 
     REQUIRE(b2.moveCount() == 11);  // 10 moves played, next one is 11
 }

@@ -3,28 +3,28 @@
  * Licensed under the MIT license. See LICENSE file in the project root for details.
  */
 
-#ifndef GAMELOGMODEL_H
-#define GAMELOGMODEL_H
+#ifndef GAMEMOVESMODEL_H
+#define GAMEMOVESMODEL_H
 
 #include <QObject>
 #include <QAbstractListModel>
 #include "../shogi/shogi.h"
 
-class GameLogModel : public QAbstractListModel
+class GameMovesModel : public QAbstractListModel
 {
     Q_OBJECT
 
 public:
-    enum ModelRoles {
-        Count = Qt::UserRole,
-        Internal,
-        USI,
+    enum Roles {
+        Move = Qt::UserRole,
     };
 
-    explicit GameLogModel(shogi::Board& board, QObject* parent=nullptr);
+    explicit GameMovesModel(shogi::Board& board, QObject* parent=nullptr);
 
     int rowCount(const QModelIndex& parent=QModelIndex()) const override;
     QVariant data(const QModelIndex& index, int role=Qt::DisplayRole) const override;
+
+    void moveFormat(shogi::MoveFormat format);
 
 public slots:
     void onDataChanged();
@@ -34,6 +34,7 @@ protected:
 
 private:
     shogi::Board& m_board;
+    shogi::MoveFormat m_format;
 };
 
-#endif // GAMELOGMODEL_H
+#endif // GAMEMOVESMODEL_H

@@ -2,23 +2,21 @@
 
 ![main](https://github.com/vinymeuh/qShogi/actions/workflows/ci-main.yml/badge.svg)
 
-qShogi is a program I written to study and play [Shogi](https://en.wikipedia.org/wiki/Shogi) on my Linux box. For the moment it has very basic **features**:
+qShogi is a program I written to study and play [Shogi](https://en.wikipedia.org/wiki/Shogi) on my Linux box. BTW it is also a mean for me to learn C++ and the [Qt framework](https://www.qt.io/) therefore the quality of the code is certainly of beginner level.
 
-* Play human vs human
-* Play Handicap Shogi
+## Prerequisites
 
-BTW it is also a mean for me to learn C++ and the [Qt framework](https://www.qt.io/) therefore the quality of the code is certainly of beginner level.
-
-
-## Installation
-
-qShogi depends on Qt 6.2 or greater with Qt SVG module. See the [Releases](https://github.com/vinymeuh/qShogi/releases) page to download binary.
+qShogi depends on Qt 6.2 or greater with Qt SVG module.
 
 * Arch Linux
 
 ```
 pacman -S qt6-declarative qt6-svg
 ```
+
+## Install
+
+See the [Releases](https://github.com/vinymeuh/qShogi/releases) page to download binary.
 
 ## Building from source
 

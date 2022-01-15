@@ -18,7 +18,7 @@ namespace shogi {
  * Main goal of these classes is to store each movement played and be able to represent them in different format.
  * Note that there is no movements validation at this level, it is the solely responsibility of the Board class.
  */
-enum class MoveFormat { Debug, USI, };
+enum class MoveFormat { Debug, USI, Hodges, Hosking };
 
 
 class Move
@@ -35,8 +35,8 @@ class Shift : public Move
 {
     friend class Board;
 public:
-    Shift(Piece piece, Cell from, Cell to, bool promotion=false)
-        : m_piece{piece}, m_captured{}, m_from{from}, m_to{to}, m_promotion{promotion} {};
+    Shift(Piece piece, Cell from, Cell to, bool promotable=false, bool promoted=false)
+        : m_piece{piece}, m_captured{}, m_from{from}, m_to{to}, m_promotable{promotable}, m_promoted{promoted} {};
 
     std::string toString(MoveFormat format=MoveFormat::USI) const override;
 private:
@@ -44,7 +44,8 @@ private:
     std::optional<Piece> m_captured;
     Cell m_from;
     Cell m_to;
-    bool m_promotion;
+    bool m_promotable;
+    bool m_promoted;
 };
 
 

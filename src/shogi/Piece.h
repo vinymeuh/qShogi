@@ -79,6 +79,10 @@ constexpr const PieceType pieceType(Piece p) noexcept
     }
 }
 
+
+std::string pieceTypeSymbol(PieceType pt);
+
+
 constexpr const Piece piece(PieceType pt, Color color) noexcept
 {
     if (color == Black) {

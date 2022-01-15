@@ -15,26 +15,38 @@ std::string Shift::toString(MoveFormat format) const
 
     switch(format) {
     case MoveFormat::Debug:
-        if (m_promotion) {
-            s = "Piece=" + pieceSymbol(m_piece) +
-                    ", From=" + CellToString(m_from) +
-                    ", To=" + CellToString(m_to) +
-                    ", Promoted=true";
-        } else {
-            s = "Piece=" + pieceSymbol(m_piece) +
-                    ", From=" + CellToString(m_from) +
-                    ", To=" + CellToString(m_to) +
-                    ", Promoted=false";
+        s = "Piece=" + pieceSymbol(m_piece) +
+                ", From=" + HodgesNotation(m_from) +
+                ", To=" + HodgesNotation(m_to);
+        if (m_promoted) s += ", Promoted";
+        if (m_captured.has_value()) {
+            s += ", Capture=" + pieceSymbol(m_captured.value());
         }
         break;
     case MoveFormat::USI:
-        if (m_promotion) {
-            s = std::string{CellToString(m_from)} + std::string{CellToString(m_to)} + "+";
-        } else {
-            s = std::string{CellToString(m_from)} + std::string{CellToString(m_to)};
+        s = HodgesNotation(m_from) + HodgesNotation(m_to);
+        if (m_promoted) s += "+";
+        break;
+    case MoveFormat::Hodges:
+        s = pieceTypeSymbol(pieceType(m_piece)) + HodgesNotation(m_from); // TODO: origin only when needed to resolve ambiguity
+        if (m_captured.has_value()) s += "x" + HodgesNotation(m_to);
+        else  s += "-" + HodgesNotation(m_to);
+        if (m_promotable) {
+            if (m_promoted) s += "+";
+            else s += "=";
+        }
+        break;
+    case MoveFormat::Hosking:
+        s = pieceTypeSymbol(pieceType(m_piece)) + HoskingNotation(m_from); // TODO: origin only when needed to resolve ambiguity
+        if (m_captured.has_value()) s += "x" + HoskingNotation(m_to);
+        else  s += "-" + HoskingNotation(m_to);
+        if (m_promotable) {
+            if (m_promoted) s += "+";
+            else s += "=";
         }
         break;
     }
+
     return s;
 }
 
@@ -42,17 +54,25 @@ std::string Shift::toString(MoveFormat format) const
 std::string Drop::toString(MoveFormat format) const
 {
     std::string s;
+    std::string ps = pieceSymbol(m_piece);
+
     switch(format) {
     case MoveFormat::Debug:
-        s = "Piece=" + pieceSymbol(m_piece) + ", dropped To=" + CellToString(m_to);
+        s = "Piece=" + ps + ", Dropped, To=" + HodgesNotation(m_to);
         break;
     case MoveFormat::USI:
-        std::string p = pieceSymbol(m_piece);
-        std::transform(p.begin(), p.end(), p.begin(),
-                       [](unsigned char p){ return std::toupper(p); });
-        s = p + "*" + std::string{CellToString(m_to)};
+        std::transform(ps.begin(), ps.end(), ps.begin(),
+                       [](unsigned char ps){ return std::toupper(ps); });
+        s = ps + "*" + HodgesNotation(m_to);
+        break;
+    case MoveFormat::Hodges:
+        s = pieceTypeSymbol(pieceType(m_piece)) + "*" + HodgesNotation(m_to);
+        break;
+    case MoveFormat::Hosking:
+        s = pieceTypeSymbol(pieceType(m_piece)) + "*" + HoskingNotation(m_to);
         break;
     }
+
     return s;
 }
 

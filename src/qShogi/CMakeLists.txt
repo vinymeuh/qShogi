@@ -1,7 +1,7 @@
 set(HEADER_FILES
     BoardModel.h
     GameController.h
-    GameLogModel.h
+    GameMovesModel.h
     NorthHandModel.h
     SouthHandModel.h
 )
@@ -10,7 +10,7 @@ set(SOURCE_FILES
     main.cpp
     BoardModel.cpp
     GameController.cpp
-    GameLogModel.cpp
+    GameMovesModel.cpp
     NorthHandModel.cpp
     SouthHandModel.cpp
 )

@@ -26,39 +26,39 @@ TEST_CASE("Piece is promoted")
 
 TEST_CASE("Piece can promote")
 {
-    REQUIRE(pieceCanPromote(BlackPawn, Cell::d9, Cell::c9));
-    REQUIRE(pieceCanPromote(BlackPawn, Cell::c9, Cell::b9));
+    REQUIRE(pieceCanPromote(BlackPawn, Cell::C9d, Cell::C9c));
+    REQUIRE(pieceCanPromote(BlackPawn, Cell::C9c, Cell::C9b));
 
-    REQUIRE(!pieceCanPromote(BlackPawn, Cell::g1, Cell::f1));
-    REQUIRE(!pieceCanPromote(BlackPromotedPawn, Cell::d9, Cell::c9));
+    REQUIRE(!pieceCanPromote(BlackPawn, Cell::C1g, Cell::C1f));
+    REQUIRE(!pieceCanPromote(BlackPromotedPawn, Cell::C9d, Cell::C9c));
 
-    REQUIRE(pieceCanPromote(WhitePawn, Cell::f5, Cell::g5));
-    REQUIRE(pieceCanPromote(WhitePawn, Cell::g5, Cell::h5));
+    REQUIRE(pieceCanPromote(WhitePawn, Cell::C5f, Cell::C5g));
+    REQUIRE(pieceCanPromote(WhitePawn, Cell::C5g, Cell::C5h));
 
-    REQUIRE(!pieceCanPromote(WhitePawn, Cell::c2, Cell::d2));
-    REQUIRE(!pieceCanPromote(WhitePromotedPawn, Cell::f5, Cell::g5));
+    REQUIRE(!pieceCanPromote(WhitePawn, Cell::C2c, Cell::C2d));
+    REQUIRE(!pieceCanPromote(WhitePromotedPawn, Cell::C5f, Cell::C5g));
 
-    REQUIRE(!pieceCanPromote(BlackKing, Cell::d7,  Cell::c7));
-    REQUIRE(!pieceCanPromote(BlackGold, Cell::c8,  Cell::b8));
+    REQUIRE(!pieceCanPromote(BlackKing, Cell::C7d,  Cell::C7c));
+    REQUIRE(!pieceCanPromote(BlackGold, Cell::C8c,  Cell::C8b));
 }
 
 TEST_CASE("Piece must promote")
 {
-    REQUIRE(pieceMustPromote(BlackPawn, Cell::a2));
-    REQUIRE(pieceMustPromote(BlackLance, Cell::a9));
-    REQUIRE(pieceMustPromote(BlackKnight, Cell::b3));
+    REQUIRE(pieceMustPromote(BlackPawn, Cell::C2a));
+    REQUIRE(pieceMustPromote(BlackLance, Cell::C9a));
+    REQUIRE(pieceMustPromote(BlackKnight, Cell::C3b));
 
-    REQUIRE(!pieceMustPromote(BlackSilver, Cell::a2));
-    REQUIRE(!pieceMustPromote(BlackPromotedPawn, Cell::a2));
-    REQUIRE(!pieceMustPromote(BlackPromotedLance, Cell::a2));
-    REQUIRE(!pieceMustPromote(BlackPromotedKnight, Cell::b3));
+    REQUIRE(!pieceMustPromote(BlackSilver, Cell::C2a));
+    REQUIRE(!pieceMustPromote(BlackPromotedPawn, Cell::C2a));
+    REQUIRE(!pieceMustPromote(BlackPromotedLance, Cell::C2a));
+    REQUIRE(!pieceMustPromote(BlackPromotedKnight, Cell::C3b));
 
-    REQUIRE(pieceMustPromote(WhitePawn, Cell::i2));
-    REQUIRE(pieceMustPromote(WhiteLance, Cell::i9));
-    REQUIRE(pieceMustPromote(WhiteKnight, Cell::h3));
+    REQUIRE(pieceMustPromote(WhitePawn, Cell::C2i));
+    REQUIRE(pieceMustPromote(WhiteLance, Cell::C9i));
+    REQUIRE(pieceMustPromote(WhiteKnight, Cell::C3h));
 
-    REQUIRE(!pieceMustPromote(WhiteSilver, Cell::i2));
-    REQUIRE(!pieceMustPromote(WhitePromotedPawn, Cell::i2));
-    REQUIRE(!pieceMustPromote(WhitePromotedLance, Cell::i9));
-    REQUIRE(!pieceMustPromote(WhitePromotedKnight, Cell::h3));
+    REQUIRE(!pieceMustPromote(WhiteSilver, Cell::C2i));
+    REQUIRE(!pieceMustPromote(WhitePromotedPawn, Cell::C2i));
+    REQUIRE(!pieceMustPromote(WhitePromotedLance, Cell::C9i));
+    REQUIRE(!pieceMustPromote(WhitePromotedKnight, Cell::C3h));
 }

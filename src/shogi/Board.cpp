@@ -224,14 +224,15 @@ std::string Board::pieceStringAt(const Cell index) const
 }
 
 
-void Board::shiftPiece(Cell from, Cell to, bool promote)
+void Board::shiftPiece(Cell from, Cell to, bool promoted)
 {
     auto piece = cell(from);
     assert(piece.has_value());
     auto piece_to = cell(to);
     assert(!piece_to.has_value() || pieceColor(*piece) != pieceColor(*piece_to));
 
-    auto move = std::make_shared<Shift>(*piece, from, to, promote);
+    bool promotable = canPromote(from, to);
+    auto move = std::make_shared<Shift>(*piece, from, to, promotable, promoted);
 
     // capture
     if (piece_to.has_value()) {
@@ -384,28 +385,28 @@ void Board::shiftPiece(Cell from, Cell to, bool promote)
         m_AllBlackPieces[from] = 0;
         m_BlackPawns[from] = 0;
         m_AllBlackPieces[to] = 1;
-        if (!promote) m_BlackPawns[to] = 1;
+        if (!promoted) m_BlackPawns[to] = 1;
         else m_BlackPromotedPawns[to] = 1;
         break;
     case BlackLance:
         m_AllBlackPieces[from] = 0;
         m_BlackLances[from] = 0;
         m_AllBlackPieces[to] = 1;
-        if (!promote) m_BlackLances[to] = 1;
+        if (!promoted) m_BlackLances[to] = 1;
         else m_BlackPromotedLances[to] = 1;
         break;
     case BlackKnight:
         m_AllBlackPieces[from] = 0;
         m_BlackKnights[from] = 0;
         m_AllBlackPieces[to] = 1;
-        if (!promote) m_BlackKnights[to] = 1;
+        if (!promoted) m_BlackKnights[to] = 1;
         else m_BlackPromotedKnights[to] = 1;
         break;
     case BlackSilver:
         m_AllBlackPieces[from] = 0;
         m_BlackSilvers[from] = 0;
         m_AllBlackPieces[to] = 1;
-        if (!promote) m_BlackSilvers[to] = 1;
+        if (!promoted) m_BlackSilvers[to] = 1;
         else m_BlackPromotedSilvers[to] = 1;
         break;
     case BlackGold:
@@ -424,14 +425,14 @@ void Board::shiftPiece(Cell from, Cell to, bool promote)
         m_AllBlackPieces[from] = 0;
         m_BlackBishops[from] = 0;
         m_AllBlackPieces[to] = 1;
-        if (!promote) m_BlackBishops[to] = 1;
+        if (!promoted) m_BlackBishops[to] = 1;
         else m_BlackPromotedBishops[to] = 1;
         break;
     case BlackRook:
         m_AllBlackPieces[from] = 0;
         m_BlackRooks[from] = 0;
         m_AllBlackPieces[to] = 1;
-        if (!promote) m_BlackRooks[to] = 1;
+        if (!promoted) m_BlackRooks[to] = 1;
         else m_BlackPromotedRooks[to] = 1;
         break;
     case BlackPromotedPawn:
@@ -469,28 +470,28 @@ void Board::shiftPiece(Cell from, Cell to, bool promote)
         m_AllWhitePieces[from] = 0;
         m_WhitePawns[from] = 0;
         m_AllWhitePieces[to] = 1;
-        if (!promote) m_WhitePawns[to] = 1;
+        if (!promoted) m_WhitePawns[to] = 1;
         else m_WhitePromotedPawns[to] = 1;
         break;
     case WhiteLance:
         m_AllWhitePieces[from] = 0;
         m_WhiteLances[from] = 0;
         m_AllWhitePieces[to] = 1;
-        if (!promote) m_WhiteLances[to] = 1;
+        if (!promoted) m_WhiteLances[to] = 1;
         else m_WhitePromotedLances[to] = 1;
         break;
     case WhiteKnight:
         m_AllWhitePieces[from] = 0;
         m_WhiteKnights[from] = 0;
         m_AllWhitePieces[to] = 1;
-        if (!promote) m_WhiteKnights[to] = 1;
+        if (!promoted) m_WhiteKnights[to] = 1;
         else m_WhitePromotedKnights[to] = 1;
         break;
     case WhiteSilver:
         m_AllWhitePieces[from] = 0;
         m_WhiteSilvers[from] = 0;
         m_AllWhitePieces[to] = 1;
-        if (!promote) m_WhiteSilvers[to] = 1;
+        if (!promoted) m_WhiteSilvers[to] = 1;
         else m_WhitePromotedSilvers[to] = 1;
         break;
     case WhiteGold:
@@ -509,14 +510,14 @@ void Board::shiftPiece(Cell from, Cell to, bool promote)
         m_AllWhitePieces[from] = 0;
         m_WhiteBishops[from] = 0;
         m_AllWhitePieces[to] = 1;
-        if (!promote) m_WhiteBishops[to] = 1;
+        if (!promoted) m_WhiteBishops[to] = 1;
         else m_WhitePromotedBishops[to] = 1;
         break;
     case WhiteRook:
         m_AllWhitePieces[from] = 0;
         m_WhiteRooks[from] = 0;
         m_AllWhitePieces[to] = 1;
-        if (!promote) m_WhiteRooks[to] = 1;
+        if (!promoted) m_WhiteRooks[to] = 1;
         else m_WhitePromotedRooks[to] = 1;
         break;
     case WhitePromotedPawn:

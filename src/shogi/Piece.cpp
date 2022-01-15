@@ -7,22 +7,45 @@
 
 namespace shogi {
 
+
+std::string pieceTypeSymbol(PieceType pt)
+{
+    switch(pt) {
+    case Pawn:   return "P";
+    case Lance:  return "L";
+    case Knight: return "N";
+    case Silver: return "S";
+    case Gold:   return "G";
+    case Bishop: return "B";
+    case Rook:   return "R";
+    case King:   return "K";
+    case PromotedPawn:   return "+P";
+    case PromotedLance:  return "+L";
+    case PromotedKnight: return "+N";
+    case PromotedSilver: return "+S";
+    case PromotedBishop: return "+B";
+    case PromotedRook:   return "+R";
+    }
+}
+
+
 bool pieceCanPromote(Piece p, Cell from, Cell to)
 {
     if (pieceIsPromoted(p) || p == BlackGold || p == BlackKing || p == WhiteGold || p == WhiteKing) return false;
 
-    if (pieceColor(p) == Black && (from <= Cell::c1 || to <= Cell::c1)) return true;
-    else if (pieceColor(p) == White && (from >= Cell::g9 || to >= Cell::g9)) return true;
+    if (pieceColor(p) == Black && (from <= Cell::C1c || to <= Cell::C1c)) return true;
+    else if (pieceColor(p) == White && (from >= Cell::C9g || to >= Cell::C9g)) return true;
     else return false;
 }
 
+
 bool pieceMustPromote(Piece p, Cell to)
 {
-    if ((p == BlackPawn || p == BlackLance) && to <= Cell::a1) return true;
-    if (p == BlackKnight && to <= Cell::b1) return true;
+    if ((p == BlackPawn || p == BlackLance) && to <= Cell::C1a) return true;
+    if (p == BlackKnight && to <= Cell::C1b) return true;
 
-    if ((p == WhitePawn || p == WhiteLance) && to >= Cell::i9) return true;
-    if (p == WhiteKnight && to >= Cell::g9) return true;
+    if ((p == WhitePawn || p == WhiteLance) && to >= Cell::C9i) return true;
+    if (p == WhiteKnight && to >= Cell::C9g) return true;
 
     return false;
 }

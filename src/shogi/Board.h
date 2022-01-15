@@ -72,7 +72,7 @@ public:
     std::string pieceStringAt(const unsigned int rank, const unsigned int file) const { return pieceStringAt(static_cast<Cell>(rank*9+file)); }
 
     // Updates board with a move WITHOUT move validation.
-    void shiftPiece(Cell from, Cell to, bool promote=false);
+    void shiftPiece(Cell from, Cell to, bool promoted=false);
     void dropPiece(Piece piece, Cell to);
 
     inline bool canPromote(Cell from, Cell to)

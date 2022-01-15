@@ -2,9 +2,9 @@ import QtQuick
 import qShogi
 
 Item {
-    id: gamearea
+    id: root
 
-    readonly property int cellSize: (height-2*(gamearea.boardInnerMargin+gamearea.boardOuterMargin))/9
+    readonly property int cellSize: (height-2*(root.boardInnerMargin+root.boardOuterMargin))/9
     readonly property int boardInnerMargin: 10
     readonly property int boardOuterMargin: 20
     readonly property real handSizeRatio: 0.8
@@ -12,21 +12,21 @@ Item {
     readonly property string backgroundColor: "#ffffff"
     readonly property string boardColor: "#bcbcbc"
 
-    width: height + 2*(gamearea.boardInnerMargin+gamearea.boardOuterMargin) + 2*cellSize
+    width: height + 2*(root.boardInnerMargin+root.boardOuterMargin) + 2*cellSize
 
     // North Hand Area
     Rectangle {
         id: northHandArea
         height: parent.height
-        width: gamearea.cellSize
+        width: root.cellSize
         anchors.left: parent.left
-        color: gamearea.backgroundColor
+        color: root.backgroundColor
 
         Column {
             id: northHandStack
             anchors {
                 top: parent.top
-                topMargin: gamearea.boardOuterMargin
+                topMargin: root.boardOuterMargin
                 horizontalCenter: parent.horizontalCenter
             }
             spacing: 3
@@ -45,7 +45,7 @@ Item {
 
         Rectangle {
             id: northColorIndicator
-            width: gamearea.cellSize
+            width: root.cellSize
             anchors {
                 top: northHandStack.bottom
                 horizontalCenter: parent.horizontalCenter
@@ -54,7 +54,7 @@ Item {
                 text: "☖"
                 font.pointSize: 20
                 rotation: 180
-                width: gamearea.cellSize
+                width: root.cellSize
                 verticalAlignment: Text.AlignVCenter
                 horizontalAlignment: Text.AlignHCenter
                 enabled: false
@@ -69,15 +69,15 @@ Item {
         height: parent.height
         width: height
         anchors.left: northHandArea.right
-        color: gamearea.backgroundColor
+        color: root.backgroundColor
 
         Rectangle {
             id: board
-            height: parent.height - 2*gamearea.boardOuterMargin
+            height: parent.height - 2*root.boardOuterMargin
             width: height
-            color: gamearea.boardColor
+            color: root.boardColor
             anchors {
-                margins: gamearea.boardOuterMargin
+                margins: root.boardOuterMargin
                 horizontalCenter: parent.horizontalCenter
                 verticalCenter: parent.verticalCenter
             }
@@ -87,7 +87,7 @@ Item {
                 rows: 9
                 columns: 9
                 anchors {
-                    margins: gamearea.boardInnerMargin
+                    margins: root.boardInnerMargin
                     horizontalCenter: parent.horizontalCenter
                     verticalCenter: parent.verticalCenter
                 }
@@ -101,13 +101,13 @@ Item {
 
                         property int dropIndex: index   // used to keep index of entered cell, see PieceOnBoard
 
-                        width: gamearea.cellSize
+                        width: root.cellSize
                         height: width
 
                         Rectangle {
                             id: cell
                             anchors.fill: parent
-                            color: gamearea.boardColor
+                            color: root.boardColor
                             border.color: "black"
                             border.width: 1
                             states: [
@@ -127,7 +127,7 @@ Item {
                 id: piecesGrid
 
                 anchors {
-                    margins: gamearea.boardInnerMargin
+                    margins: root.boardInnerMargin
                     horizontalCenter: parent.horizontalCenter
                     verticalCenter: parent.verticalCenter
                 }
@@ -151,15 +151,15 @@ Item {
     Rectangle {
         id: southHandArea
         height: parent.height
-        width: gamearea.cellSize
+        width: root.cellSize
         anchors.left: boardArea.right
-        color: gamearea.backgroundColor
+        color: root.backgroundColor
 
         Column {
             id: southHandStack
             anchors {
                 bottom: parent.bottom
-                bottomMargin: gamearea.boardOuterMargin
+                bottomMargin: root.boardOuterMargin
                 horizontalCenter: parent.horizontalCenter
             }
             spacing: 3
@@ -178,16 +178,16 @@ Item {
 
         Rectangle {
             id: southColorIndicator
-            width: gamearea.cellSize
+            width: root.cellSize
             anchors {
                 bottom: southHandStack.top
-                bottomMargin: 2*gamearea.boardOuterMargin
+                bottomMargin: 2*root.boardOuterMargin
                 horizontalCenter: parent.horizontalCenter
             }
             TextInput {
                 text: "☗"
                 font.pointSize: 20
-                width: gamearea.cellSize
+                width: root.cellSize
                 verticalAlignment: Text.AlignVCenter
                 horizontalAlignment: Text.AlignHCenter
                 enabled: false

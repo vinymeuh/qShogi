@@ -10,7 +10,7 @@
 #include <QQmlApplicationEngine>
 #include "../shogi/shogi.h"
 #include "BoardModel.h"
-#include "GameLogModel.h"
+#include "GameMovesModel.h"
 #include "NorthHandModel.h"
 #include "SouthHandModel.h"
 
@@ -31,7 +31,7 @@ public:
 
     // piece representation
     Q_INVOKABLE QString pieceImageFilePath(int index) const;
-    Q_INVOKABLE QString pieceImageFilePath(shogi::PieceType piece_type, Orientation orientation) const;
+    Q_INVOKABLE QString pieceImageFilePath(shogi::PieceType piece_type, GameController::Orientation orientation) const;
 
     // piece retrieval
     Q_INVOKABLE QString cellAtIndex(int index) const;
@@ -56,6 +56,9 @@ public:
     Q_INVOKABLE void toggleEditMode();
     Q_INVOKABLE void switchSideToMove();
 
+    // game record
+    Q_INVOKABLE void setMoveFormat(shogi::MoveFormat format);
+
 private:
     void openPromotionDialog(int from, int to);
 
@@ -66,7 +69,7 @@ signals:
 private:
     shogi::Board m_board;
     BoardModel m_board_model;
-    GameLogModel m_gamelog_model;
+    GameMovesModel m_gamemoves_model;
     NorthHandModel m_northhand_model;
     SouthHandModel m_southhand_model;
     QQmlApplicationEngine* m_engine;

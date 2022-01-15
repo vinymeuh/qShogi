@@ -11,7 +11,7 @@
 
 
 GameController::GameController(QQmlApplicationEngine* engine, QObject* parent)
-    : m_engine{engine}, QObject{parent}, m_board_model(m_board), m_gamelog_model(m_board),
+    : m_engine{engine}, QObject{parent}, m_board_model(m_board), m_gamemoves_model(m_board),
       m_northhand_model{NorthHandModel(m_board, shogi::White)},
       m_southhand_model{SouthHandModel(m_board, shogi::Black)},
       m_edit_mode{false}
@@ -19,13 +19,13 @@ GameController::GameController(QQmlApplicationEngine* engine, QObject* parent)
     m_board.set_start_position();
 
     qmlRegisterSingletonInstance("qShogi", 1, 0, "BoardModel", &m_board_model);
-    qmlRegisterSingletonInstance("qShogi", 1, 0, "GameLogModel", &m_gamelog_model);
+    qmlRegisterSingletonInstance("qShogi", 1, 0, "GameLogModel", &m_gamemoves_model);
     qmlRegisterSingletonInstance("qShogi", 1, 0, "NorthHandModel", &m_northhand_model);
     qmlRegisterSingletonInstance("qShogi", 1, 0, "SouthHandModel", &m_southhand_model);
 
     // GameController signals to C++ models slots
     QObject::connect(this, SIGNAL(nextMove()), &m_board_model, SLOT(onDataChanged()));
-    QObject::connect(this, SIGNAL(nextMove()), &m_gamelog_model, SLOT(onDataChanged()));
+    QObject::connect(this, SIGNAL(nextMove()), &m_gamemoves_model, SLOT(onDataChanged()));
     QObject::connect(this, SIGNAL(nextMove()), &m_northhand_model, SLOT(onDataChanged()));
     QObject::connect(this, SIGNAL(nextMove()), &m_southhand_model, SLOT(onDataChanged()));
 }
@@ -148,7 +148,6 @@ void GameController::move(int from, int to)
     }
     else {
         m_board.shiftPiece(cfrom, cto, must_promote);
-        //qDebug() << QString::fromStdString(m_board.SFEN()); FIXME
         emit nextMove();
     }
 
@@ -230,7 +229,14 @@ void GameController::switchSideToMove()
 {
     m_board.switchSideToMove();
     emit nextMove();
-};
+}
+
+
+void GameController::setMoveFormat(shogi::MoveFormat format)
+{
+    m_gamemoves_model.moveFormat(format);
+    emit nextMove();
+}
 
 
 void GameController::openPromotionDialog(int from, int to)

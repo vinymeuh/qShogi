@@ -43,12 +43,41 @@ ApplicationWindow {
             }
             Action { text: qsTr("Change Turn"); enabled: GameController.editMode; onTriggered: { GameController.switchSideToMove() } }
         }
-        /* useless now, useless now, useless now, perhaps later if I implement to interface with UCI engines
+        /* useless now,  perhaps later if I implement to interface with UCI engines
         Menu {
             title: qsTr("&Game")
             Action { text: qsTr("&Start New Game"); onTriggered: openDialog("NewGameDialog.qml") }
         }
         */
+        Menu {
+            title: qsTr("&Game Record")
+            Menu {
+                title: qsTr("Move format")
+                ActionGroup { id: moveFormatAG }
+                Action {
+                    text: qsTr("Debug");
+                    checkable: true;
+                    ActionGroup.group: moveFormatAG;
+                    onTriggered: { GameController.setMoveFormat(0) }
+                }
+                Action {
+                    text: qsTr("USI");
+                    checkable: true;
+                    checked: true;
+                    ActionGroup.group: moveFormatAG;
+                    onTriggered: { GameController.setMoveFormat(1) } }
+                Action {
+                    text: qsTr("Hodges");
+                    checkable: true;
+                    ActionGroup.group: moveFormatAG;
+                    onTriggered: { GameController.setMoveFormat(2) } }
+                Action {
+                    text: qsTr("Hosking");
+                    checkable: true;
+                    ActionGroup.group: moveFormatAG;
+                    onTriggered: { GameController.setMoveFormat(3) } }
+            }
+        }
         Menu {
             title: qsTr("&Help")
             Action { text: qsTr("&About"); onTriggered: openDialog("AboutDialog.qml") }
@@ -61,51 +90,14 @@ ApplicationWindow {
         height: parent.height
     }
 
-    // Moves log
-    Rectangle {
-        id: gamelog
-        height: parent.height - 12
+    // Game record area
+    GameRecordArea {
+        id: gamerecordarea
+        height: parent.height - 20
         width: parent.width - gamearea.width - 20
-        border.color: "black"
-        border.width: 1
         anchors {
             top: parent.top; topMargin: 10
             left: gamearea.right
-        }
-
-        ListView {
-            id: gamelogListView
-            anchors.fill: parent
-            anchors.margins: 10
-            clip: true
-
-            model: GameLogModel
-            delegate: Component {
-                Item {
-                    height: 20
-                    Row {
-                        spacing: 10
-                        Text {
-                            text: count
-                            font.pixelSize: 14
-                        }
-                        Text {
-                            text: usi
-                            font.pixelSize: 14
-                        }
-                    }
-                }
-            }
-
-            ScrollBar.vertical: ScrollBar {
-                parent: gamelog
-                policy: ScrollBar.AlwaysOn
-                anchors {
-                    top: parent.top; topMargin: gamelog.topPadding
-                    bottom: parent.bottom; bottomMargin: gamelog.bottomPadding
-                    right: parent.right; rightMargin: 1
-                }
-            }
         }
     }
 
