@@ -19,4 +19,4 @@ jobs:
           cmake -DCMAKE_BUILD_TYPE=Debug -DLIBSHOGI_TESTING=ON ..
           make shogiTesting
       - name: Run shogiTesting
-        run: libshogi/tests/shogiTesting
+        run: build/libshogi/tests/shogiTesting
