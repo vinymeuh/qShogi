@@ -1,4 +1,6 @@
-# qShogi - Build instructions
+# Build instructions
+
+## qShogi
 
 qShogi build requires Qt 6.2 or greater with Qt 6 SVG module, a compiler with C++17 support and ```cmake``` 3.21 or greater.
 
@@ -6,28 +8,32 @@ Run following commands to do a Release build:
 
 ```
 $ cd qShogi
-$ mkdir build
-$ cmake -DCMAKE_PREFIX_PATH="<QT_DIR>" -DCMAKE_BUILD_TYPE=Release ..
+$ mkdir build && cd build
+$ cmake -DCMAKE_PREFIX_PATH="${QT_DIR}" -DCMAKE_BUILD_TYPE=Release ..
 $ make
-$ src/qShogi/qShogi
+$ src/qShogi
 ```
 
-For a Debug build with shogi library testing enabled:
+## libshogi
+
+Libshogi is a pure C++ library with not Qt dependencies.
+
+Build it alone is not very useful but we can run tests with **shogiTesting** target.
 
 ```
 $ cd qShogi
-$ mkdir build
-$ cmake -DCMAKE_PREFIX_PATH="<QT_DIR>" -DCMAKE_BUILD_TYPE=Debug -DQSHOGI_LIBSHOGI_TESTING=ON ..
+$ mkdir build && cd build
+$ cmake -DCMAKE_BUILD_TYPE=Debug -DLIBSHOGI_TESTING=ON ..
 $ make shogiTesting
-$ test/shogiTesting
+$ libshogi/tests/shogiTesting
 ```
 
-And for code coverage:
+Code coverage report is generated with GCOVR.
 
 ```
 $ cd qShogi
-$ mkdir build
-$ cmake -DCMAKE_PREFIX_PATH="<QT_DIR>" -DCMAKE_BUILD_TYPE=Debug -DQSHOGI_LIBSHOGI_TESTING=ON -DQSHOGI_LIBSHOGI_COVERAGE=ON ..
+$ mkdir build && cd build
+$ cmake -DCMAKE_BUILD_TYPE=Debug -DLIBSHOGI_TESTING=ON -DLIBSHOGI_COVERAGE=ON ..
 $ make shogiCoverage
 $ firefox ./shogiCoverage/index.html
 ```

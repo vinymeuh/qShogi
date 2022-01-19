@@ -16,7 +16,7 @@ jobs:
       - name: Build shogiTesting
         run: |
           mkdir build && cd build
-          cmake -DCMAKE_BUILD_TYPE=Debug -DQSHOGI_LIBSHOGI_TESTING=ON ..
+          cmake -DCMAKE_BUILD_TYPE=Debug -DLIBSHOGI_TESTING=ON ..
           make shogiTesting
       - name: Run shogiTesting
-        run: build/test/shogiTesting
+        run: libshogi/tests/shogiTesting

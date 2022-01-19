@@ -8,7 +8,8 @@
 
 #include <QObject>
 #include <QAbstractListModel>
-#include "../shogi/shogi.h"
+
+#include "shogi.h"
 
 class GameMovesModel : public QAbstractListModel
 {

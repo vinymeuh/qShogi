@@ -9,7 +9,8 @@
 #include <QObject>
 #include <QAbstractListModel>
 #include <QQmlApplicationEngine>
-#include "../shogi/shogi.h"
+
+#include "shogi.h"
 
 class BoardModel : public QAbstractListModel
 {

@@ -8,7 +8,9 @@
 
 #include <QObject>
 #include <QQmlApplicationEngine>
-#include "../shogi/shogi.h"
+
+#include "shogi.h"
+
 #include "BoardModel.h"
 #include "GameMovesModel.h"
 #include "NorthHandModel.h"

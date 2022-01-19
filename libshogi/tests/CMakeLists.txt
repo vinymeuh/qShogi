@@ -20,10 +20,10 @@ target_link_libraries(shogiTesting
     PRIVATE shogi
 )
 
-if (SHOGI_CODE_COVERAGE)
+if (LIBSHOGI_COVERAGE)
     setup_target_for_coverage_gcovr_html(
         NAME shogiCoverage
         EXECUTABLE shogiTesting
-        BASE_DIRECTORY "${PROJECT_SOURCE_DIR}/src"
+        BASE_DIRECTORY "${PROJECT_SOURCE_DIR}/libshogi"
     )
 endif()

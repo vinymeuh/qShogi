@@ -104,7 +104,7 @@ QString GameController::pieceImageFilePath(shogi::PieceType piece_type, Orientat
     if (orientation == South) orientation_str = "south";
     else orientation_str = "north";
 
-    return "/pieces/kanji_light/" + orientation_str + "/" + piece_type_str +".svg";
+    return "/assets/pieces/kanji_light/" + orientation_str + "/" + piece_type_str +".svg";
 }
 
 

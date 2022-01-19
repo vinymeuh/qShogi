@@ -1,5 +1,6 @@
 #include "catch.hpp"
-#include "shogi/shogi.h"
+
+#include "shogi.h"
 
 using namespace shogi;
 

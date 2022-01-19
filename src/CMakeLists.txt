@@ -1,18 +1,18 @@
 set(HEADER_FILES
-    BoardModel.h
-    GameController.h
-    GameMovesModel.h
-    NorthHandModel.h
-    SouthHandModel.h
+    include/BoardModel.h
+    include/GameController.h
+    include/GameMovesModel.h
+    include/NorthHandModel.h
+    include/SouthHandModel.h
 )
 
 set(SOURCE_FILES
-    main.cpp
-    BoardModel.cpp
-    GameController.cpp
-    GameMovesModel.cpp
-    NorthHandModel.cpp
-    SouthHandModel.cpp
+    src/main.cpp
+    src/BoardModel.cpp
+    src/GameController.cpp
+    src/GameMovesModel.cpp
+    src/NorthHandModel.cpp
+    src/SouthHandModel.cpp
 )
 
 set(CMAKE_AUTOUIC ON)
@@ -29,8 +29,10 @@ qt_add_executable(
     qShogi
     ${HEADER_FILES}
     ${SOURCE_FILES}
-    resources/resources.qrc
+    resources.qrc
 )
+
+include_directories(include ../libshogi/include)
 
 target_link_libraries(
     qShogi
