@@ -4,10 +4,13 @@
         <file>qml/PieceOnBoard.qml</file>
         <file>qml/PieceInHand.qml</file>
         <file>qml/PromoteDialog.qml</file>
-        <file>qml/GameArea.qml</file>
-        <file>qml/GameRecordArea.qml</file>
+        <file>qml/LeftPanel.qml</file>
+        <file>qml/RightPanel.qml</file>
         <file>qml/AboutDialog.qml</file>
         <file>qml/NewGameDialog.qml</file>
+        <file>qml/AppMenuBar.qml</file>
+        <file>qml/Hand.qml</file>
+        <file>assets/board/grid.svg</file>
         <file>assets/pieces/kanji_light/north/bishop.svg</file>
         <file>assets/pieces/kanji_light/north/bishopP.svg</file>
         <file>assets/pieces/kanji_light/north/gold.svg</file>

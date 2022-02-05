@@ -3,17 +3,17 @@
  * Licensed under the MIT license. See LICENSE file in the project root for details.
  */
 
-#ifndef SOUTHHANDMODEL_H
-#define SOUTHHANDMODEL_H
+#ifndef HANDMODEL_H
+#define HANDMODEL_H
 
 #include <QObject>
 #include <QAbstractListModel>
 
 #include "shogi.h"
 
-class SouthHandModel : public QAbstractListModel
+class HandModel : public QAbstractListModel
 {
-    Q_OBJECT;
+    Q_OBJECT
 
 public:
     enum ModelRoles {
@@ -21,7 +21,7 @@ public:
         PieceType,
     };
 
-    SouthHandModel(const shogi::Board& board, shogi::Color color, QObject* parent=nullptr)
+    HandModel(const shogi::Board& board, shogi::Color color, QObject* parent=nullptr)
         : QAbstractListModel(parent), m_board{board}, m_color{color} {};
 
     int rowCount(const QModelIndex& parent=QModelIndex()) const override;
@@ -40,4 +40,4 @@ private:
     shogi::Color m_color;
 };
 
-#endif // SOUTHHANDMODEL_H
+#endif // HANDMODEL_H

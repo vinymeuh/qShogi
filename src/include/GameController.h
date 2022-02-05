@@ -13,8 +13,7 @@
 
 #include "BoardModel.h"
 #include "GameMovesModel.h"
-#include "NorthHandModel.h"
-#include "SouthHandModel.h"
+#include "HandModel.h"
 
 
 class GameController : public QObject
@@ -72,8 +71,8 @@ private:
     shogi::Board m_board;
     BoardModel m_board_model;
     GameMovesModel m_gamemoves_model;
-    NorthHandModel m_northhand_model;
-    SouthHandModel m_southhand_model;
+    HandModel m_northhand_model;
+    HandModel m_southhand_model;
     QQmlApplicationEngine* m_engine;
 
     // settings

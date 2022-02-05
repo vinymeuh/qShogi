@@ -12,8 +12,8 @@
 
 GameController::GameController(QQmlApplicationEngine* engine, QObject* parent)
     : m_engine{engine}, QObject{parent}, m_board_model(m_board), m_gamemoves_model(m_board),
-      m_northhand_model{NorthHandModel(m_board, shogi::White)},
-      m_southhand_model{SouthHandModel(m_board, shogi::Black)},
+      m_northhand_model{HandModel(m_board, shogi::White)},
+      m_southhand_model{HandModel(m_board, shogi::Black)},
       m_edit_mode{false}
 {   
     m_board.set_start_position();

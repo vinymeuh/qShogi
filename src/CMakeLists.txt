@@ -2,8 +2,7 @@ set(HEADER_FILES
     include/BoardModel.h
     include/GameController.h
     include/GameMovesModel.h
-    include/NorthHandModel.h
-    include/SouthHandModel.h
+    include/HandModel.h
 )
 
 set(SOURCE_FILES
@@ -11,8 +10,7 @@ set(SOURCE_FILES
     src/BoardModel.cpp
     src/GameController.cpp
     src/GameMovesModel.cpp
-    src/NorthHandModel.cpp
-    src/SouthHandModel.cpp
+    src/HandModel.cpp
 )
 
 set(CMAKE_AUTOUIC ON)
