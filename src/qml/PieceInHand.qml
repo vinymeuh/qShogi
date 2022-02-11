@@ -30,6 +30,7 @@ Item {
                 if (parent.dropIndex) {
                     GameController.drop(root.pieceType, root.pieceColor, parent.dropIndex)
                 }
+                GameController.redraw()
             }
         }
 

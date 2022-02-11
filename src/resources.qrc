@@ -10,6 +10,7 @@
         <file>qml/NewGameDialog.qml</file>
         <file>qml/AppMenuBar.qml</file>
         <file>qml/Hand.qml</file>
+        <file>qml/InfoPlayer.qml</file>
         <file>assets/board/grid.svg</file>
         <file>assets/pieces/kanji_light/north/bishop.svg</file>
         <file>assets/pieces/kanji_light/north/bishopP.svg</file>

@@ -19,7 +19,7 @@
 class GameController : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString turn READ turn NOTIFY nextMove)
+    Q_PROPERTY(QString turn READ turn NOTIFY redraw)
     Q_PROPERTY(bool editMode READ editMode NOTIFY editModeChanged)
 
 public:
@@ -64,7 +64,7 @@ private:
     void openPromotionDialog(int from, int to);
 
 signals:
-    void nextMove();
+    void redraw();
     void editModeChanged();
 
 private:

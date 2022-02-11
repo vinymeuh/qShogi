@@ -14,7 +14,7 @@ Item {
             top: parent.top
         }
         height: parent.height
-        width: 7*root.cellWidth + spacing
+        width: parent.width
 
         spacing: 10
 
@@ -30,42 +30,71 @@ Item {
         }
 
         Rectangle {
-            id: gamemoves
-            border.color: "black"
-            border.width: 1
+            id: infopanel
             height: parent.height - 2*root.cellHeight - 2*parent.spacing
             width: parent.width
 
-            ScrollView {
-                anchors.fill: parent
-                ScrollBar.vertical.policy: ScrollBar.AsNeeded
-                ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+            InfoPlayer {
+                id: northplayer
+                anchors {
+                    top: parent.top
+                    left: parent.left
+                    right: parent.right
+                }
+                text: "☖ Gote"
+                isMyTurn: (GameController.turn === "white") ? 4 : 0
+            }
 
-                ListView {
-                    id: gamemovesListView
+            Rectangle {
+                id: gamemoves
+                anchors {
+                    top: northplayer.bottom
+                    left: parent.left
+                }
+                width: parent.width
+                height: parent.height - northplayer.height - southplayer.height
+
+                ScrollView {
                     anchors.fill: parent
-                    anchors.margins: 10
-                    clip: true
+                    ScrollBar.vertical.policy: ScrollBar.AsNeeded
+                    ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
 
-                    model: GameLogModel
-                    delegate: Component {
-                        Rectangle {
-                            width: gamemovesListView.width
-                            height: 20
-                            color: ListView.isCurrentItem ? "lightskyblue" : "white"
-                            Text {
-                                text: move
-                                font.pixelSize: 12
-                                font.family: "Consolas";
+                    ListView {
+                        id: gamemovesListView
+                        anchors.fill: parent
+                        anchors.margins: 10
+                        clip: true
+
+                        model: GameLogModel
+                        delegate: Component {
+                            Rectangle {
+                                width: gamemovesListView.width
+                                height: 20
+                                color: ListView.isCurrentItem ? "lightskyblue" : "white"
+                                Text {
+                                    text: move
+                                    font.pixelSize: 12
+                                    font.family: "Consolas";
+                                }
                             }
                         }
-                    }
-
-                    onCountChanged: {
-                        gamemovesListView.currentIndex = gamemovesListView.count - 1
-                        positionViewAtEnd()
+                        onCountChanged: {
+                            gamemovesListView.currentIndex = gamemovesListView.count - 1
+                            positionViewAtEnd()
+                        }
                     }
                 }
+            }
+
+            InfoPlayer {
+                id: southplayer
+                anchors {
+                    top: gamemoves.bottom
+                    left: parent.left
+                    right: parent.right
+                }
+                text: "☗ Sente"
+                isMyTurn: (GameController.turn === "black") ? 4 : 0
             }
         }
 

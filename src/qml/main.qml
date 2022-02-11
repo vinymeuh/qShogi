@@ -15,7 +15,9 @@ ApplicationWindow {
 
     Item {
         id: mainWindow
-        anchors.fill: parent
+        anchors.centerIn: parent
+        height: parent.height
+        width: leftpanel.width + rightpanel.width
 
         LeftPanel {
             id: leftpanel
@@ -25,7 +27,7 @@ ApplicationWindow {
         RightPanel {
             id: rightpanel
             height: parent.height - 20
-            width: parent.width - leftpanel.width - 20
+            width: 7*leftpanel.cellWidth
             anchors {
                 top: parent.top; topMargin: 10
                 left: leftpanel.right
@@ -35,11 +37,7 @@ ApplicationWindow {
         }
     }
 
-    footer: ToolBar {
-        Text {
-            text: (GameController.editMode) ? GameController.turn + " (Edit mode)" : GameController.turn
-        }
-    }
+    footer: ToolBar {}
 
     // Function used for dialogs dynamic instantiation
     function openDialog(qmlfile) {

@@ -24,10 +24,10 @@ GameController::GameController(QQmlApplicationEngine* engine, QObject* parent)
     qmlRegisterSingletonInstance("qShogi", 1, 0, "SouthHandModel", &m_southhand_model);
 
     // GameController signals to C++ models slots
-    QObject::connect(this, SIGNAL(nextMove()), &m_board_model, SLOT(onDataChanged()));
-    QObject::connect(this, SIGNAL(nextMove()), &m_gamemoves_model, SLOT(onDataChanged()));
-    QObject::connect(this, SIGNAL(nextMove()), &m_northhand_model, SLOT(onDataChanged()));
-    QObject::connect(this, SIGNAL(nextMove()), &m_southhand_model, SLOT(onDataChanged()));
+    QObject::connect(this, SIGNAL(redraw()), &m_board_model, SLOT(onDataChanged()));
+    QObject::connect(this, SIGNAL(redraw()), &m_gamemoves_model, SLOT(onDataChanged()));
+    QObject::connect(this, SIGNAL(redraw()), &m_northhand_model, SLOT(onDataChanged()));
+    QObject::connect(this, SIGNAL(redraw()), &m_southhand_model, SLOT(onDataChanged()));
 }
 
 
@@ -60,7 +60,7 @@ void GameController::newGame(int sfenChoice, QString sfenStr)
     case 9: m_board.set_start_position(shogi::sfen_handicap_10pieces); break;
     }
 
-    emit nextMove();
+    emit redraw();
 }
 
 
@@ -148,10 +148,7 @@ void GameController::move(int from, int to)
     }
     else {
         m_board.shiftPiece(cfrom, cto, must_promote);
-        emit nextMove();
     }
-
-    return;
 }
 
 
@@ -160,7 +157,7 @@ void GameController::moveAfterPromotionDecision(int from, int to, bool promotion
     auto cfrom = static_cast<shogi::Cell>(from);
     auto cto = static_cast<shogi::Cell>(to);
     m_board.shiftPiece(cfrom, cto, promotion);
-    emit nextMove();
+    emit redraw();  // display bug without it
 }
 
 
@@ -169,7 +166,6 @@ void GameController::drop(shogi::PieceType piece_type, shogi::Color color, int t
     shogi::Piece piece = shogi::piece(piece_type, color);
     auto cto = static_cast<shogi::Cell>(to);
     m_board.dropPiece(piece, cto);
-    emit nextMove();
 }
 
 
@@ -219,7 +215,7 @@ void GameController::toggleEditMode()
     else {
         m_edit_mode = true;
         m_board.editModeOn();
-        emit nextMove();    // reset game log
+        emit redraw();    // reset game log
     }
     emit editModeChanged();
 }
@@ -228,14 +224,14 @@ void GameController::toggleEditMode()
 void GameController::switchSideToMove()
 {
     m_board.switchSideToMove();
-    emit nextMove();
+    emit redraw();
 }
 
 
 void GameController::setMoveFormat(shogi::MoveFormat format)
 {
     m_gamemoves_model.moveFormat(format);
-    emit nextMove();
+    emit redraw();
 }
 
 

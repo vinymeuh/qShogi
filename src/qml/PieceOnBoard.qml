@@ -15,11 +15,11 @@ Rectangle {
         onReleased: {
             parent = (piece.Drag.target !== null) ? piece.Drag.target : root
             if (parent.dropIndex) {
-                if (parent.dropIndex === index) {
-                    return
-                }
-                GameController.move(index, parent.dropIndex)
+                if (parent.dropIndex !== index) {
+                    GameController.move(index, parent.dropIndex)
+                }         
             }
+            GameController.redraw()
         }
     }
 
