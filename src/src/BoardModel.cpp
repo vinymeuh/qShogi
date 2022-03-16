@@ -12,25 +12,25 @@
 
 BoardModel::BoardModel(shogi::Board& board, QObject* parent)
     : QAbstractListModel(parent), m_board(board)
-{
-    //qDebug() << QString::fromStdString(m_board.SFEN());   FIXME
-}
+{}
 
 
 int BoardModel::rowCount(const QModelIndex& parent) const
 {
     Q_UNUSED(parent);
-    return 9*9;
+    return m_board.squares();
 }
 
 
 QVariant BoardModel::data(const QModelIndex& index, int role) const
 {
     Q_UNUSED(role)
-    if (index.row() < 0 || index.row() >= 9*9)
+    if (index.row() < 0 || index.row() >= m_board.squares())
         return QVariant();
-    auto c = static_cast<shogi::Cell>(index.row());
-    return QString::fromStdString(m_board.pieceStringAt(c));
+
+    return QString::fromStdString(
+                m_board[index.row()].piece.toString()
+            );
 }
 
 void BoardModel::onDataChanged()

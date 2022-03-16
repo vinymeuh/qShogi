@@ -13,6 +13,19 @@ using namespace shogi;
 
 namespace shogi {
 
+    namespace sfen {
+        const std::string shogi_even = "lnsgkgsnl/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL b - 1";
+        const std::string shogi_handicap_lance = "lnsgkgsnl/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/1NSGKGSNL w - 1";
+        const std::string shogi_handicap_bishop = "lnsgkgsnl/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/7R1/LNSGKGSNL w - 1";
+        const std::string shogi_handicap_rook = "lnsgkgsnl/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/1B7/LNSGKGSNL w - 1";
+        const std::string shogi_handicap_rook_lance = "lnsgkgsnl/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/1B7/1NSGKGSNL w - 1";
+        const std::string shogi_handicap_2pieces = "lnsgkgsnl/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/9/LNSGKGSNL w - 1";
+        const std::string shogi_handicap_4pieces = "lnsgkgsnl/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/9/1NSGKGSN1 w - 1";
+        const std::string shogi_handicap_6pieces = "lnsgkgsnl/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/9/2SGKGS2 w - 1";
+        const std::string shogi_handicap_8pieces = "lnsgkgsnl/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/9/3GKG3 w - 1";
+        const std::string shogi_handicap_10pieces = "lnsgkgsnl/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/9/4K4 w - 1";
+    }
+
 bool ShogiBoard::moveCanPromote(int from, int to) {
     Square square = m_board[from];
     if (square.piece.promoted == true) return false;

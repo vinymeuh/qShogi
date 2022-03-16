@@ -45,27 +45,21 @@ MenuBar {
                 title: qsTr("Move format")
                 ActionGroup { id: moveFormatAG }
                 Action {
-                    text: qsTr("Debug");
-                    checkable: true;
-                    ActionGroup.group: moveFormatAG;
-                    onTriggered: { GameController.setMoveFormat(0) }
-                }
-                Action {
                     text: qsTr("USI");
                     checkable: true;
                     checked: true;
                     ActionGroup.group: moveFormatAG;
-                    onTriggered: { GameController.setMoveFormat(1) } }
+                    onTriggered: { GameController.setMoveFormat(0) } }
                 Action {
                     text: qsTr("Hodges");
                     checkable: true;
                     ActionGroup.group: moveFormatAG;
-                    onTriggered: { GameController.setMoveFormat(2) } }
+                    onTriggered: { GameController.setMoveFormat(1) } }
                 Action {
                     text: qsTr("Hosking");
                     checkable: true;
                     ActionGroup.group: moveFormatAG;
-                    onTriggered: { GameController.setMoveFormat(3) } }
+                    onTriggered: { GameController.setMoveFormat(2) } }
             }
         }
         Menu {

@@ -7,7 +7,7 @@
 
 
 GameMovesModel::GameMovesModel(shogi::Board& board, QObject* parent)
-    : QAbstractListModel(parent), m_board(board), m_format(shogi::MoveFormat::USI)
+    : QAbstractListModel(parent), m_board(board), m_format(shogi::Notation::USI)
 {
 }
 
@@ -15,42 +15,26 @@ GameMovesModel::GameMovesModel(shogi::Board& board, QObject* parent)
 int GameMovesModel::rowCount(const QModelIndex& parent) const
 {
     Q_UNUSED(parent);
-    return m_board.moves().size();
+    return m_board.moves();
 }
 
 
 QVariant GameMovesModel::data(const QModelIndex& index, int role) const
 {
-    if (index.row() < 0 || index.row() >= m_board.moves().size())
+    if (index.row() < 0 || index.row() >= m_board.moves())
         return QVariant();
-    auto move = m_board.moves()[index.row()];
 
     if (role == Move) {
-        switch(m_format) {
-        case shogi::MoveFormat::Debug:
-            return QString("%1   %2")
-                    .arg(index.row()+1, 4)
-                    .arg(QString::fromStdString(move->toString(shogi::MoveFormat::Debug)));
-        case shogi::MoveFormat::USI:
-            return QString("%1   %2")
-                    .arg(index.row()+1, 4)
-                    .arg(QString::fromStdString(move->toString(shogi::MoveFormat::USI)));
-        case shogi::MoveFormat::Hodges:
-            return QString("%1   %2")
-                    .arg(index.row()+1, 4)
-                    .arg(QString::fromStdString(move->toString(shogi::MoveFormat::Hodges)));
-        case shogi::MoveFormat::Hosking:
-            return QString("%1   %2")
-                    .arg(index.row()+1, 4)
-                    .arg(QString::fromStdString(move->toString(shogi::MoveFormat::Hosking)));
-        }
+        return QString("%1   %2")
+                .arg(index.row()+1, 4)
+                .arg(QString::fromStdString(m_board.moveNumber(index.row(), m_format)));
     }
 
     return QVariant();
 }
 
 
-void GameMovesModel::moveFormat(shogi::MoveFormat format)
+void GameMovesModel::moveFormat(shogi::Notation format)
 {
     m_format = format;
     onDataChanged();

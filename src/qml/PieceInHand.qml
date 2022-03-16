@@ -48,7 +48,7 @@ Item {
             Image {
                 id: pieceImage
                 anchors.fill: parent
-                source: GameController.pieceImageFilePath(root.pieceType, root.pieceOrientation)
+                source: GameController.pieceImageFilePath(root.pieceType, false, root.pieceOrientation)
                 fillMode: Image.PreserveAspectFit
                 opacity: (root.pieceCount > 0) ? 1.0 : 0.1
             }

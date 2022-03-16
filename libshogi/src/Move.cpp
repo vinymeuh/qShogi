@@ -3,84 +3,56 @@
  * Licensed under the MIT license. See LICENSE file in the project root for details.
  */
 
-#include "shogi.h"
+#include "Move.h"
 
-#include <algorithm>
+using namespace shogi;
 
-namespace shogi {
+std::string Move::toString(Notation format) const {
 
-std::string Shift::toString(MoveFormat format) const
-{
     std::string s;
 
     switch(format) {
-    case MoveFormat::Debug:
-        s = "Piece=" + pieceSymbol(m_piece) +
-                ", From=" + HodgesNotation(m_from) +
-                ", To=" + HodgesNotation(m_to);
-        if (m_promoted) s += ", Promoted";
-        if (m_captured.has_value()) {
-            s += ", Capture=" + pieceSymbol(m_captured.value());
+    case Notation::USI:
+        if (m_from.has_value()) {
+            s = m_from.value().coordinatesString() + m_to.coordinatesString();
+            if (m_promoted == true) s+= "+";
+        }
+        else {
+            s = m_to.piece.toUpperString() + "*" + m_to.coordinatesString();
         }
         break;
-    case MoveFormat::USI:
-        s = HodgesNotation(m_from) + HodgesNotation(m_to);
-        if (m_promoted) s += "+";
-        break;
-    case MoveFormat::Hodges:
-        s = pieceTypeSymbol(pieceType(m_piece)) + HodgesNotation(m_from); // TODO: origin only when needed to resolve ambiguity
-        if (m_captured.has_value()) s += "x" + HodgesNotation(m_to);
-        else  s += "-" + HodgesNotation(m_to);
-        if (m_promotable) {
-            if (m_promoted) s += "+";
-            else s += "=";
+    case Notation::Hodges:
+        if (m_from.has_value()) {
+            s = m_from.value().piece.toUpperString(); // TODO: ambiguity resolution
+
+            if (m_to.piece.type == Type::none) s += "-";
+            else s += "x";
+
+            s += m_to.coordinatesString();
+
+            if (m_promoted == true) s+= "+";
+            else if (m_promotable == true) s+= "=";
+        }
+        else {
+            s = m_to.piece.toUpperString() + "*" + m_to.coordinatesString();
         }
         break;
-    case MoveFormat::Hosking:
-        s = pieceTypeSymbol(pieceType(m_piece)) + HoskingNotation(m_from); // TODO: origin only when needed to resolve ambiguity
-        if (m_captured.has_value()) s += "x" + HoskingNotation(m_to);
-        else  s += "-" + HoskingNotation(m_to);
-        if (m_promotable) {
-            if (m_promoted) s += "+";
-            else s += "=";
+    case Notation::Hosking:
+        if (m_from.has_value()) {
+            s = m_from.value().piece.toUpperString(); // TODO: ambiguity resolution
+
+            if (m_to.piece.type != Type::none) s += "x";
+
+            s += m_to.coordinatesString(Notation::Hosking);
+
+            if (m_promoted == true) s+= "+";
+            else if (m_promotable == true) s+= "=";
+        }
+        else {
+            s = m_to.piece.toUpperString() + "'" + m_to.coordinatesString(Notation::Hosking);
         }
         break;
     }
 
     return s;
 }
-
-
-std::string Drop::toString(MoveFormat format) const
-{
-    std::string s;
-    std::string ps = pieceSymbol(m_piece);
-
-    switch(format) {
-    case MoveFormat::Debug:
-        s = "Piece=" + ps + ", Dropped, To=" + HodgesNotation(m_to);
-        break;
-    case MoveFormat::USI:
-        std::transform(ps.begin(), ps.end(), ps.begin(),
-                       [](unsigned char ps){ return std::toupper(ps); });
-        s = ps + "*" + HodgesNotation(m_to);
-        break;
-    case MoveFormat::Hodges:
-        s = pieceTypeSymbol(pieceType(m_piece)) + "*" + HodgesNotation(m_to);
-        break;
-    case MoveFormat::Hosking:
-        s = pieceTypeSymbol(pieceType(m_piece)) + "*" + HoskingNotation(m_to);
-        break;
-    }
-
-    return s;
-}
-
-
-std::ostream& operator<<(std::ostream& os, const Move& move)
-{
-    os << move.toString(MoveFormat::Debug);
-    return os;
-}
-
-} // namespace shogi

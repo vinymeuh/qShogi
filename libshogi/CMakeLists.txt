@@ -7,20 +7,23 @@ endif()
 set(HEADER_FILES
     include/shogi.h
     include/Board.h
-    include/Cell.h
+    include/Square.h
     include/Move.h
-    include/Piece.h
+    include/ShogiBoard.h
+    include/MiniShogiBoard.h
 )
 
 set(SOURCE_FILES
     src/Board.cpp
+    src/Square.cpp
     src/Move.cpp
-    src/Piece.cpp
+    src/ShogiBoard.cpp
+    src/MiniShogiBoard.cpp
 )
 
 include_directories(include)
 
-add_library(shogi STATIC
+add_library(shogi OBJECT
     ${HEADER_FILES}
     ${SOURCE_FILES}
 )

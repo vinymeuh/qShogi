@@ -6,15 +6,24 @@
 #ifndef SHOGIBOARD_H
 #define SHOGIBOARD_H
 
-#include <bitset>
 #include "Board.h"
 
 namespace shogi {
 
-using bitboard81 = std::bitset<81>;
+    namespace sfen {
+        extern const std::string shogi_even;
+        extern const std::string shogi_handicap_lance;
+        extern const std::string shogi_handicap_bishop;
+        extern const std::string shogi_handicap_rook;
+        extern const std::string shogi_handicap_rook_lance;
+        extern const std::string shogi_handicap_2pieces;
+        extern const std::string shogi_handicap_4pieces;
+        extern const std::string shogi_handicap_6pieces;
+        extern const std::string shogi_handicap_8pieces;
+        extern const std::string shogi_handicap_10pieces;
+    }
 
-class ShogiBoard final : public Board
-{
+class ShogiBoard final : public Board {
 public:
     ShogiBoard() : Board(9, 9) {
         m_hand[Color::black] = {
@@ -31,5 +40,6 @@ public:
     virtual bool moveCanPromote(int from, int to) override;
     virtual bool moveMustPromote(int from, int to) override;
 };
+
 } // namespace shogi
 #endif // SHOGIBOARD_H

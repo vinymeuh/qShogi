@@ -25,7 +25,7 @@ public:
     int rowCount(const QModelIndex& parent=QModelIndex()) const override;
     QVariant data(const QModelIndex& index, int role=Qt::DisplayRole) const override;
 
-    void moveFormat(shogi::MoveFormat format);
+    void moveFormat(shogi::Notation format);
 
 public slots:
     void onDataChanged();
@@ -35,7 +35,7 @@ protected:
 
 private:
     shogi::Board& m_board;
-    shogi::MoveFormat m_format;
+    shogi::Notation m_format;
 };
 
 #endif // GAMEMOVESMODEL_H

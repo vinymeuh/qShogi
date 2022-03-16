@@ -9,7 +9,7 @@ Rectangle {
 
     height: playertext.contentHeight
     border {
-        color: "lawngreen"
+        color: (GameController.editMode == false) ? "lawngreen" : "red"
         width: ( root.isMyTurn ) ? 4 : 0
     }
     Text {

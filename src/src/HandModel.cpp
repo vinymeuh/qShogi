@@ -19,25 +19,23 @@ QVariant HandModel::data(const QModelIndex& index, int role) const
     if (indexRow < 0 || indexRow >= rowCount())
         return QVariant();
 
-    std::array<unsigned short, 7> hand;
-    if (m_color == shogi::Black) hand = m_board.blackHand();
-    else hand = m_board.whiteHand();
+    shogi::Type piece_type;
+    switch(indexRow) {
+    case 0: piece_type = shogi::Type::pawn; break;
+    case 1: piece_type = shogi::Type::lance; break;
+    case 2: piece_type = shogi::Type::knight; break;
+    case 3: piece_type = shogi::Type::silver; break;
+    case 4: piece_type = shogi::Type::gold; break;
+    case 5: piece_type = shogi::Type::bishop; break;
+    case 6: piece_type = shogi::Type::rook; break;
+    }
 
     if (role == PieceCount) {
-        return QVariant(hand[indexRow]);
+        return QVariant(m_board.hand(m_color, piece_type));
     }
 
     if (role == PieceType) {
-        switch(indexRow) {
-        case 0: return QVariant(shogi::Pawn); break;
-        case 1: return QVariant(shogi::Lance); break;
-        case 2: return QVariant(shogi::Knight); break;
-        case 3: return QVariant(shogi::Silver); break;
-        case 4: return QVariant(shogi::Gold); break;
-        case 5: return QVariant(shogi::Bishop); break;
-        case 6: return QVariant(shogi::Rook); break;
-        default: return QVariant();
-        }
+        return QVariant(static_cast<int>(piece_type));
     }
 
     return QVariant();

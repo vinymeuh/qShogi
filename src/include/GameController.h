@@ -32,7 +32,7 @@ public:
 
     // piece representation
     Q_INVOKABLE QString pieceImageFilePath(int index) const;
-    Q_INVOKABLE QString pieceImageFilePath(shogi::PieceType piece_type, GameController::Orientation orientation) const;
+    Q_INVOKABLE QString pieceImageFilePath(shogi::Type piece_type, bool promoted, GameController::Orientation orientation) const;
 
     // piece retrieval
     Q_INVOKABLE QString cellAtIndex(int index) const;
@@ -41,7 +41,7 @@ public:
     // piece moves
     Q_INVOKABLE void move(int from, int to);
     Q_INVOKABLE void moveAfterPromotionDecision(int from, int to, bool promotion=false);
-    Q_INVOKABLE void drop(shogi::PieceType piece_type, shogi::Color color, int to);
+    Q_INVOKABLE void drop(shogi::Color color, shogi::Type piece_type, int to);
 
     // hands
     Q_INVOKABLE shogi::Color northHandColor() const;
@@ -58,7 +58,7 @@ public:
     Q_INVOKABLE void switchSideToMove();
 
     // game record
-    Q_INVOKABLE void setMoveFormat(shogi::MoveFormat format);
+    Q_INVOKABLE void setMoveFormat(shogi::Notation format);
 
 private:
     void openPromotionDialog(int from, int to);
@@ -68,7 +68,7 @@ signals:
     void editModeChanged();
 
 private:
-    shogi::Board m_board;
+    shogi::ShogiBoard m_board;
     BoardModel m_board_model;
     GameMovesModel m_gamemoves_model;
     HandModel m_northhand_model;

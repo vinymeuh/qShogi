@@ -42,7 +42,7 @@ Item {
                     right: parent.right
                 }
                 text: "☖ Gote"
-                isMyTurn: (GameController.turn === "white") ? 4 : 0
+                isMyTurn: (GameController.turn === "white") ? true : false
             }
 
             Rectangle {
@@ -94,7 +94,7 @@ Item {
                     right: parent.right
                 }
                 text: "☗ Sente"
-                isMyTurn: (GameController.turn === "black") ? 4 : 0
+                isMyTurn: (GameController.turn === "black") ? true : false
             }
         }
 

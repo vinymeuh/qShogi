@@ -12,11 +12,11 @@
 
 GameController::GameController(QQmlApplicationEngine* engine, QObject* parent)
     : m_engine{engine}, QObject{parent}, m_board_model(m_board), m_gamemoves_model(m_board),
-      m_northhand_model{HandModel(m_board, shogi::White)},
-      m_southhand_model{HandModel(m_board, shogi::Black)},
+      m_northhand_model{HandModel(m_board, shogi::Color::white)},
+      m_southhand_model{HandModel(m_board, shogi::Color::black)},
       m_edit_mode{false}
 {   
-    m_board.set_start_position();
+    m_board.setSFEN(shogi::sfen::shogi_even);
 
     qmlRegisterSingletonInstance("qShogi", 1, 0, "BoardModel", &m_board_model);
     qmlRegisterSingletonInstance("qShogi", 1, 0, "GameLogModel", &m_gamemoves_model);
@@ -33,31 +33,31 @@ GameController::GameController(QQmlApplicationEngine* engine, QObject* parent)
 
 void GameController::newGame(int sfenChoice, QString sfenStr)
 {
-    std::string previous_sfen = m_board.sfen();
+    std::string previous_sfen = m_board.SFEN();
 
     switch(sfenChoice) {
     case -2:
-        m_board.set_start_position(previous_sfen);
+        m_board.setSFEN(previous_sfen);
         break;
     case -1:
         try {
-            m_board.set_start_position(sfenStr.toStdString());
+            m_board.setSFEN(sfenStr.toStdString());
         }
         catch (const std::invalid_argument& e) {
             qDebug() << e.what();   // TODO: display error message
-            m_board.set_start_position(previous_sfen);
+            m_board.setSFEN(previous_sfen);
         }
         break;
-    case 0: m_board.set_start_position(shogi::sfen_even); break;
-    case 1: m_board.set_start_position(shogi::sfen_handicap_lance); break;
-    case 2: m_board.set_start_position(shogi::sfen_handicap_bishop); break;
-    case 3: m_board.set_start_position(shogi::sfen_handicap_rook); break;
-    case 4: m_board.set_start_position(shogi::sfen_handicap_rook_lance); break;
-    case 5: m_board.set_start_position(shogi::sfen_handicap_2pieces); break;
-    case 6: m_board.set_start_position(shogi::sfen_handicap_4pieces); break;
-    case 7: m_board.set_start_position(shogi::sfen_handicap_6pieces); break;
-    case 8: m_board.set_start_position(shogi::sfen_handicap_8pieces); break;
-    case 9: m_board.set_start_position(shogi::sfen_handicap_10pieces); break;
+    case 0: m_board.setSFEN(shogi::sfen::shogi_even); break;
+    case 1: m_board.setSFEN(shogi::sfen::shogi_handicap_lance); break;
+    case 2: m_board.setSFEN(shogi::sfen::shogi_handicap_bishop); break;
+    case 3: m_board.setSFEN(shogi::sfen::shogi_handicap_rook); break;
+    case 4: m_board.setSFEN(shogi::sfen::shogi_handicap_rook_lance); break;
+    case 5: m_board.setSFEN(shogi::sfen::shogi_handicap_2pieces); break;
+    case 6: m_board.setSFEN(shogi::sfen::shogi_handicap_4pieces); break;
+    case 7: m_board.setSFEN(shogi::sfen::shogi_handicap_6pieces); break;
+    case 8: m_board.setSFEN(shogi::sfen::shogi_handicap_8pieces); break;
+    case 9: m_board.setSFEN(shogi::sfen::shogi_handicap_10pieces); break;
     }
 
     emit redraw();
@@ -66,38 +66,46 @@ void GameController::newGame(int sfenChoice, QString sfenStr)
 
 QString GameController::pieceImageFilePath(int index) const
 {
-    if (index < 0 || index >= 9*9)
+    if (index < 0 || index >= m_board.squares()) {
         return "";
-    auto cell = static_cast<shogi::Cell>(index);
-    auto piece = m_board.cell(cell);
-    if (piece.has_value()) {
-        Orientation orientation;
-        if (pieceColor(*piece) == shogi::Black) orientation = South;
-        else orientation = North;
-        return pieceImageFilePath(pieceType(*piece), orientation);
     }
-    return "";
+
+    auto piece = m_board[index].piece;
+    switch(piece.color) {
+    case shogi::Color::black:
+        return pieceImageFilePath(piece.type, piece.promoted, Orientation::South);
+    case shogi::Color::white:
+        return pieceImageFilePath(piece.type, piece.promoted, Orientation::North);
+    default:
+        return "";
+    }
 }
 
 
-QString GameController::pieceImageFilePath(shogi::PieceType piece_type, Orientation orientation) const
+QString GameController::pieceImageFilePath(shogi::Type piece_type, bool promoted, Orientation orientation) const
 {
     QString piece_type_str;
-    switch (piece_type) {
-    case shogi::Pawn: piece_type_str = "pawn"; break;
-    case shogi::Lance: piece_type_str = "lance"; break;
-    case shogi::Knight: piece_type_str = "knight"; break;
-    case shogi::Silver: piece_type_str = "silver"; break;
-    case shogi::Gold: piece_type_str = "gold"; break;
-    case shogi::Bishop: piece_type_str = "bishop"; break;
-    case shogi::Rook: piece_type_str = "rook"; break;
-    case shogi::King: piece_type_str = "king"; break;
-    case shogi::PromotedPawn: piece_type_str = "pawnP"; break;
-    case shogi::PromotedLance: piece_type_str = "lanceP"; break;
-    case shogi::PromotedKnight: piece_type_str = "knightP"; break;
-    case shogi::PromotedSilver: piece_type_str = "silverP"; break;
-    case shogi::PromotedBishop: piece_type_str = "bishopP"; break;
-    case shogi::PromotedRook: piece_type_str = "rookP"; break;
+    if (promoted == false) {
+        switch (piece_type) {
+        case shogi::Type::pawn: piece_type_str = "pawn"; break;
+        case shogi::Type::lance: piece_type_str = "lance"; break;
+        case shogi::Type::knight: piece_type_str = "knight"; break;
+        case shogi::Type::silver: piece_type_str = "silver"; break;
+        case shogi::Type::gold: piece_type_str = "gold"; break;
+        case shogi::Type::bishop: piece_type_str = "bishop"; break;
+        case shogi::Type::rook: piece_type_str = "rook"; break;
+        case shogi::Type::king: piece_type_str = "king"; break;
+        }
+    }
+    else {
+        switch (piece_type) {
+        case shogi::Type::pawn: piece_type_str = "pawnP"; break;
+        case shogi::Type::lance: piece_type_str = "lanceP"; break;
+        case shogi::Type::knight: piece_type_str = "knightP"; break;
+        case shogi::Type::silver: piece_type_str = "silverP"; break;
+        case shogi::Type::bishop: piece_type_str = "bishopP"; break;
+        case shogi::Type::rook: piece_type_str = "rookP"; break;
+        }
     }
 
     QString orientation_str;
@@ -110,62 +118,51 @@ QString GameController::pieceImageFilePath(shogi::PieceType piece_type, Orientat
 
 QString GameController::cellAtIndex(int index) const
 {
-    if (index < 0 || index >= 9*9)
+    if (index < 0 || index >= m_board.squares()) {
         return "";
-    auto c = static_cast<shogi::Cell>(index);
-    return QString::fromStdString(m_board.pieceStringAt(c));
+    }
+    return QString::fromStdString( m_board[index].piece.toString() );
 }
 
 
 QString GameController::cellColorAtIndex(int index) const
 {
-    if (index < 0 || index >= 9*9)
+    if (index < 0 || index >= m_board.squares()) {
         return "";
-    auto cell = static_cast<shogi::Cell>(index);
-    auto piece = m_board.cell(cell);
-    if (piece.has_value()) {
-        if (pieceColor(*piece) == shogi::Black) {
-            return "black";
-        }
-        else {
-            return "white";
-        }
     }
-    return "";
+
+    switch(m_board[index].piece.color) {
+    case shogi::Color::black: return "black";
+    case shogi::Color::white: return "white";
+    default: return "";
+    }
 }
 
 
 void GameController::move(int from, int to)
 {
-    auto cfrom = static_cast<shogi::Cell>(from);
-    auto cto = static_cast<shogi::Cell>(to);
-
-    bool can_promote = m_board.canPromote(cfrom, cto);
-    bool must_promote = m_board.mustPromote(cfrom, cto);
+    bool can_promote = m_board.moveCanPromote(from, to);
+    bool must_promote = m_board.moveMustPromote(from, to);
 
     if (can_promote == true && must_promote == false) {
         openPromotionDialog(from, to);
     }
     else {
-        m_board.shiftPiece(cfrom, cto, must_promote);
+        m_board.move(from, to, must_promote);
     }
 }
 
 
 void GameController::moveAfterPromotionDecision(int from, int to, bool promotion)
 {
-    auto cfrom = static_cast<shogi::Cell>(from);
-    auto cto = static_cast<shogi::Cell>(to);
-    m_board.shiftPiece(cfrom, cto, promotion);
+    m_board.move(from, to, promotion);
     emit redraw();  // display bug without it
 }
 
 
-void GameController::drop(shogi::PieceType piece_type, shogi::Color color, int to)
+void GameController::drop(shogi::Color color, shogi::Type piece_type, int to)
 {
-    shogi::Piece piece = shogi::piece(piece_type, color);
-    auto cto = static_cast<shogi::Cell>(to);
-    m_board.dropPiece(piece, cto);
+    m_board.drop(color, piece_type, to);
 }
 
 
@@ -196,8 +193,8 @@ bool GameController::isSouthHandTurn() const
 QString GameController::turn() const
 {
     switch (m_board.sideToMove()) {
-    case shogi::Black: return "black";
-    case shogi::White: return "white";
+    case shogi::Color::black: return "black";
+    case shogi::Color::white: return "white";
     default: return "";
     }
 }
@@ -207,28 +204,27 @@ void GameController::toggleEditMode()
 {
     if (m_edit_mode) {
         m_edit_mode = false;
-        m_board.editModeOff();
-        // start new game from current position
-        std::string sfen = m_board.sfen();
-        m_board.set_start_position(sfen);
     }
     else {
         m_edit_mode = true;
-        m_board.editModeOn();
-        emit redraw();    // reset game log
     }
     emit editModeChanged();
+
+    // start new game from current position
+    std::string sfen = m_board.SFEN();
+    m_board.setSFEN(sfen);
+    emit redraw();
 }
 
 
 void GameController::switchSideToMove()
 {
-    m_board.switchSideToMove();
+    //m_board.switchSideToMove();
     emit redraw();
 }
 
 
-void GameController::setMoveFormat(shogi::MoveFormat format)
+void GameController::setMoveFormat(shogi::Notation format)
 {
     m_gamemoves_model.moveFormat(format);
     emit redraw();

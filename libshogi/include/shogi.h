@@ -6,17 +6,11 @@
 #ifndef SHOGI_H
 #define SHOGI_H
 
-#include <iostream>
+#include "Square.h"
 #include "Board.h"
-#include "Cell.h"
-#include "Piece.h"
 #include "Move.h"
 
-namespace shogi {
-
-std::ostream& operator<<(std::ostream& os, const Board& board);
-std::ostream& operator<<(std::ostream& os, const Move& move);
-
-} // namespace shogi
+#include "ShogiBoard.h"
+#include "MiniShogiBoard.h"
 
 #endif // SHOGI_H

@@ -1,29 +1,20 @@
-include_directories(../src)
+include_directories(../../vendor/catch2)
 
-set(HEADER_FILES
-    catch.hpp
-)
-
-set(SOURCE_FILES
+add_executable(shogi2Test
     main.cpp
+    SquareTest.cpp
     BoardTest.cpp
-    CellTest.cpp
-    PieceTest.cpp
+    MoveTest.cpp
+    ShogiBoardTest.cpp
+    MiniShogiBoardTest.cpp
 )
 
-add_executable(shogiTesting
-    ${HEADER_FILES}
-    ${SOURCE_FILES}
-)
+target_link_libraries(shogi2Test PRIVATE shogi2)
 
-target_link_libraries(shogiTesting
-    PRIVATE shogi
-)
-
-if (LIBSHOGI_COVERAGE)
+if (LIBSHOGI2_COVERAGE)
     setup_target_for_coverage_gcovr_html(
-        NAME shogiCoverage
-        EXECUTABLE shogiTesting
-        BASE_DIRECTORY "${PROJECT_SOURCE_DIR}/libshogi"
+        NAME shogi2TestCoverage
+        EXECUTABLE shogi2Test
+        BASE_DIRECTORY "${PROJECT_SOURCE_DIR}/libshogi2"
     )
 endif()

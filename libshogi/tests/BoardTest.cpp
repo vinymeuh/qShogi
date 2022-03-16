@@ -1,98 +1,225 @@
 #include "catch.hpp"
-
-#include "shogi.h"
+#include "Board.h"
 
 using namespace shogi;
 
-TEST_CASE("Board start position initialization")
-{
-    Board board;
+// clazy:excludeall=non-pod-global-static
 
-    SECTION("initialization from default sfen string") {
-        REQUIRE_NOTHROW(board.set_start_position());
-        REQUIRE(board.sfen() == sfen_even);
+class FakeBoard final : public Board {
+public:
+    FakeBoard() : Board(2, 3) {
+        m_hand[Color::black] = { {Type::pawn, 0} };
+        m_hand[Color::white] = { {Type::pawn, 0} };
+    };
+
+    bool moveCanPromote(int from, int to) override { return true; }
+    bool moveMustPromote(int from, int to) override { return true; }
+};
+
+TEST_CASE("Board: index <=> (file, rank) conversions") {
+    FakeBoard board = FakeBoard();
+
+    SECTION("(file, rank) => index") {
+        REQUIRE(board.toIndex(1, 1) == 1);
+        REQUIRE(board.toIndex(2, 1) == 0);
+        REQUIRE(board.toIndex(1, 2) == 3);
+        REQUIRE(board.toIndex(2, 2) == 2);
+        REQUIRE(board.toIndex(1, 3) == 5);
+        REQUIRE(board.toIndex(2, 3) == 4);
     }
 
-    SECTION("initialization using valid sfen_even string") {
-        REQUIRE_NOTHROW(board.set_start_position(sfen_even));
-        REQUIRE(board.sfen() == sfen_even);
+    SECTION("index => file") {
+        REQUIRE(board.toFile(0) == 2);
+        REQUIRE(board.toFile(1) == 1);
+        REQUIRE(board.toFile(2) == 2);
+        REQUIRE(board.toFile(3) == 1);
+        REQUIRE(board.toFile(4) == 2);
+        REQUIRE(board.toFile(5) == 1);
     }
 
-    SECTION("initialization using valid sfen string without movecount") {
-        REQUIRE_NOTHROW(board.set_start_position("lnsgkgsnl/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL b -"));
-        REQUIRE(board.sfen() == sfen_even);
-    }
-
-    SECTION("Board from the 3rd game of the 19th Ryu-O match between Sato and Watanabe") {
-        REQUIRE_NOTHROW(board.set_start_position("8l/1l+R2P3/p2pBG1pp/kps1p4/Nn1P2G2/P1P1P2PP/1PS6/1KSG3+r1/LN2+p3L w Sbgn3p 124"));
-        REQUIRE(board.sfen() == "8l/1l+R2P3/p2pBG1pp/kps1p4/Nn1P2G2/P1P1P2PP/1PS6/1KSG3+r1/LN2+p3L w Sbgn3p 124");
-    }
-
-    SECTION("initialization using invalid sfen string") {
-        REQUIRE_THROWS_AS(board.set_start_position("dummy"), std::invalid_argument);
-        REQUIRE_THROWS_AS(board.set_start_position("lnsgkgsnl/1r5b1/ppppppppp/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL b - 1"), std::invalid_argument);
-        REQUIRE_THROWS_AS(board.set_start_position("lnsgkgsnl/1r5b1/pppppxppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL b - 1"), std::invalid_argument);
-        REQUIRE_THROWS_AS(board.set_start_position("lnsgkgsnl/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL x - 1"), std::invalid_argument);
-        REQUIRE_THROWS_AS(board.set_start_position("lnsgkgsnl/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL b x 1"), std::invalid_argument);
-        REQUIRE_THROWS_AS(board.set_start_position("lnsgkgsnl/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL b - x"), std::invalid_argument);
+    SECTION("index => rank") {
+        REQUIRE(board.toRank(0) == 1);
+        REQUIRE(board.toRank(1) == 1);
+        REQUIRE(board.toRank(2) == 2);
+        REQUIRE(board.toRank(3) == 2);
+        REQUIRE(board.toRank(4) == 3);
+        REQUIRE(board.toRank(5) == 3);
     }
 }
 
-TEST_CASE("Basic moves with Cell")
-{
-    Board b2;
-    b2.set_start_position();
-    REQUIRE(b2.sideToMove() == shogi::Black);
-    REQUIRE(b2.moveCount() == 1);
+TEST_CASE("Board: basic board initialization") {
+    FakeBoard board = FakeBoard();
+    Square square;
 
-    b2.shiftPiece(Cell::C1g, Cell::C1f);
-    REQUIRE(!b2.cell(Cell::C1g).has_value());
-    REQUIRE(b2.cell(Cell::C1f) == BlackPawn);
-    REQUIRE(b2.moves()[0]->toString() == "1g1f");
+    REQUIRE_THROWS_AS(board[-1], std::out_of_range);
+    for (int i=0; i<board.squares(); i++) {
+        // Check square access
+        REQUIRE_NOTHROW(square = board[i]);
+         // Check squares's coordinates are correct
+        REQUIRE(square.file == board.toFile(i));
+        REQUIRE(square.rank == board.toRank(i));
+         // Check squares's are empty
+        REQUIRE(square.piece.color == Color::none);
+        REQUIRE(square.piece.type == Type::none);
+        REQUIRE(square.piece.promoted == false);
+    }
+    REQUIRE_THROWS_AS(board[board.squares()+1], std::out_of_range);
 
-    b2.shiftPiece(Cell::C1c, Cell::C1d);
-    REQUIRE(!b2.cell(Cell::C1c).has_value());
-    REQUIRE(b2.cell(Cell::C1d) == WhitePawn);
-    REQUIRE(b2.moves()[1]->toString() == "1c1d");
+    REQUIRE(board.hand(Color::black, Type::pawn) == 0);
+    REQUIRE(board.hand(Color::white, Type::pawn) == 0);
+}
 
-    b2.shiftPiece(Cell::C1f, Cell::C1e);
-    REQUIRE(b2.cell(Cell::C1e) == BlackPawn);
-    REQUIRE(b2.moves()[2]->toString() == "1f1e");
+TEST_CASE("Board: invalid moves & drops") {
+    FakeBoard board;
 
-    b2.shiftPiece(Cell::C1d, Cell::C1e);   // capture
-    REQUIRE(b2.cell(Cell::C1e) == WhitePawn);
-    REQUIRE(b2.whiteHand()[Board::Hand::Pawn] == 1);
-    REQUIRE(b2.moves()[3]->toString() == "1d1e");
+    std::string sfen = "pk/2/KP b - 1";
+    REQUIRE_NOTHROW(board.setSFEN(sfen));
+    REQUIRE(board.SFEN() == sfen);
 
-    b2.shiftPiece(Cell::C1i, Cell::C1e);   // capture
-    REQUIRE(b2.cell(Cell::C1e) == BlackLance);
-    REQUIRE(b2.blackHand()[Board::Hand::Pawn] == 1);
-    REQUIRE(b2.moves()[4]->toString() == "1i1e");
+    // moves
+    REQUIRE(board.move(5, 5) == false);   // same square
+    REQUIRE(board.move(3, 5) == false);   // from empty square
+    REQUIRE(board.move(-1, 5) == false);  // from out of board (low)
+    REQUIRE(board.move(25, 5) == false);  // from out of board (high)
+    REQUIRE(board.move(5, -1) == false);  // to out of board (low)
+    REQUIRE(board.move(5, 25) == false);  // to out of board (high)
+    REQUIRE(board.move(5, 4) == false);   // capture same color (black)
+    REQUIRE(board.move(0, 1) == false);   // capture same color (white)
+    REQUIRE(board.SFEN() == sfen);
 
-    b2.dropPiece(WhitePawn, Cell::C1c); // drop
-    REQUIRE(b2.cell(Cell::C1c) == WhitePawn);
-    REQUIRE(b2.whiteHand()[Board::Hand::Pawn] == 0);
-    REQUIRE(b2.moves()[5]->toString() == "P*1c");
+    // drops
+    REQUIRE(board.drop(Color::black, Type::king, 2) == false);    // drop king
+    REQUIRE(board.drop(Color::black, Type::pawn, 1) == false);    // drop on non empty square
+    REQUIRE(board.drop(Color::white, Type::bishop, 2) == false);  // drop piece not in hand
+    REQUIRE(board.drop(Color::white, Type::pawn, -1) == false);   // drop out of board
+    REQUIRE(board.drop(Color::white, Type::pawn, 25) == false);   // drop out of board
+    REQUIRE(board.SFEN() == sfen);
+}
 
-    b2.shiftPiece(Cell::C1e, Cell::C1c, true); // capture + promotion
-    REQUIRE(b2.cell(Cell::C1c) == BlackPromotedLance);
-    REQUIRE(b2.blackHand()[Board::Hand::Pawn] == 2);
-    REQUIRE(b2.moves()[6]->toString() == "1e1c+");
+TEST_CASE("Board: invalid moveUSI") {
+    FakeBoard board;
 
-    b2.shiftPiece(Cell::C1a, Cell::C1c);   // capture
-    REQUIRE(b2.cell(Cell::C1c) == WhiteLance);
-    REQUIRE(b2.whiteHand()[Board::Hand::Lance] == 1);
-    REQUIRE(b2.moves()[7]->toString() == "1a1c");
+    std::string sfen = "pk/2/KP b - 1";
+    REQUIRE_NOTHROW(board.setSFEN(sfen));
+    REQUIRE(board.SFEN() == sfen);
 
-    b2.dropPiece(BlackPawn, Cell::C1g); // drop
-    REQUIRE(b2.cell(Cell::C1g) == BlackPawn);
-    REQUIRE(b2.blackHand()[Board::Hand::Pawn] == 1);
-    REQUIRE(b2.moves()[8]->toString() == "P*1g");
+    // move - string length between 4 & 5
+    REQUIRE_THROWS(board.moveUSI("1"));
+    REQUIRE_THROWS(board.moveUSI("1a"));
+    REQUIRE_THROWS(board.moveUSI("1a1"));
+    REQUIRE_THROWS(board.moveUSI("1a1b++"));
 
-    b2.shiftPiece(Cell::C1c, Cell::C1g, true); // capture + promotion
-    REQUIRE(b2.cell(Cell::C1g) == WhitePromotedLance);
-    REQUIRE(b2.whiteHand()[Board::Hand::Pawn] == 1);
-    REQUIRE(b2.moves()[9]->toString() == "1c1g+");
+    // move - first character is a number
+    REQUIRE_THROWS(board.moveUSI("x11b"));
+    REQUIRE_THROWS(board.moveUSI("*11b"));
 
-    REQUIRE(b2.moveCount() == 11);  // 10 moves played, next one is 11
+    // move - second character is a lowercase letter
+    REQUIRE_THROWS(board.moveUSI("111b"));
+    REQUIRE_THROWS(board.moveUSI("1A1b"));
+
+    // move - third character is a number
+    REQUIRE_THROWS(board.moveUSI("1ayb"));
+    REQUIRE_THROWS(board.moveUSI("1a!b"));
+
+    // move - fourth character is a lowercase letter
+    REQUIRE_THROWS(board.moveUSI("1a1B"));
+    REQUIRE_THROWS(board.moveUSI("1a1!"));
+
+    // move - fifth character can only be a '+'
+    REQUIRE_THROWS(board.moveUSI("1a1b*"));
+
+    // drop - first character is a valide upper piece letter
+    REQUIRE_THROWS(board.moveUSI("Z*1a"));
+    REQUIRE_THROWS(board.moveUSI("y*1a"));
+
+    // drop - second character is always '*'
+    REQUIRE_THROWS(board.moveUSI("P+1a"));
+
+    // drop - third character is a number
+    REQUIRE_THROWS(board.moveUSI("P*yb"));
+    REQUIRE_THROWS(board.moveUSI("P*!b"));
+
+    // drop - fourth character is a lowercase letter
+    REQUIRE_THROWS(board.moveUSI("P*1B"));
+    REQUIRE_THROWS(board.moveUSI("P*1!"));
+
+    // drop - string length is always 4
+    REQUIRE_THROWS(board.moveUSI("P*1a+"));
+}
+
+
+TEST_CASE("Board: move & drop") {
+    FakeBoard board;
+
+    std::string sfen = "pp/2/PP b - 1";
+    REQUIRE_NOTHROW(board.setSFEN(sfen));
+    REQUIRE(board.SFEN() == sfen);
+
+    // simple move
+    REQUIRE(board.move(4, 2) == true);
+    REQUIRE(board.move(1, 3) == true);
+    REQUIRE(board.SFEN() == "p1/Pp/1P b - 3");
+
+    // capture
+    REQUIRE(board.move(2, 0) == true);
+    REQUIRE(board.move(3, 5) == true);
+    REQUIRE(board.SFEN() == "P1/2/1p b Pp 5");
+    REQUIRE(board.hand(Color::black, Type::pawn) == 1);
+    REQUIRE(board.hand(Color::white, Type::pawn) == 1);
+
+    // drop
+    REQUIRE(board.drop(Color::black, Type::pawn, 1) == true);
+    REQUIRE(board.drop(Color::white, Type::pawn, 4) == true);
+    REQUIRE(board.SFEN() == "PP/2/pp b - 7");
+    REQUIRE(board.hand(Color::black, Type::pawn) == 0);
+    REQUIRE(board.hand(Color::white, Type::pawn) == 0);
+
+    // promotion
+    REQUIRE(board.move(0, 2, true) == true);
+    REQUIRE(board.move(5, 3, true) == true);
+    REQUIRE(board.SFEN() == "1P/+P+p/p1 b - 9");
+}
+
+TEST_CASE("Board: moveUSI") {
+    FakeBoard board;
+
+    std::string sfen = "pp/2/PP b - 1";
+    REQUIRE_NOTHROW(board.setSFEN(sfen));
+    REQUIRE(board.SFEN() == sfen);
+
+    // simple move
+    REQUIRE(board.moveUSI("2c2b") == true);
+    REQUIRE(board.moveUSI("1a1b") == true);
+    REQUIRE(board.SFEN() == "p1/Pp/1P b - 3");
+
+    // capture
+    REQUIRE(board.moveUSI("2b2a") == true);
+    REQUIRE(board.moveUSI("1b1c") == true);
+    REQUIRE(board.SFEN() == "P1/2/1p b Pp 5");
+    REQUIRE(board.hand(Color::black, Type::pawn) == 1);
+    REQUIRE(board.hand(Color::white, Type::pawn) == 1);
+
+    // drop
+    REQUIRE(board.moveUSI("P*1a") == true);
+    REQUIRE(board.moveUSI("P*2c") == true);
+    REQUIRE(board.SFEN() == "PP/2/pp b - 7");
+    REQUIRE(board.hand(Color::black, Type::pawn) == 0);
+    REQUIRE(board.hand(Color::white, Type::pawn) == 0);
+
+    // promotion
+    REQUIRE(board.moveUSI("2a2b+") == true);
+    REQUIRE(board.moveUSI("1c1b+") == true);
+    REQUIRE(board.SFEN() == "1P/+P+p/p1 b - 9");
+
+    // moves log
+    REQUIRE(board.moveCount() == 9);
+    REQUIRE(board.moves() == 8);
+    REQUIRE(board.moveNumber(0) == "2c2b");
+    REQUIRE(board.moveNumber(1) == "1a1b");
+    REQUIRE(board.moveNumber(2) == "2b2a");
+    REQUIRE(board.moveNumber(3) == "1b1c");
+    REQUIRE(board.moveNumber(4) == "P*1a");
+    REQUIRE(board.moveNumber(5) == "P*2c");
+    REQUIRE(board.moveNumber(6) == "2a2b+");
+    REQUIRE(board.moveNumber(7) == "1c1b+");
 }
